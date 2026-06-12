@@ -1,12 +1,13 @@
 package com.bookkok.club.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "club")
+@Table(name = "clubs")
 @Getter
 public class Club {
 
@@ -18,10 +19,10 @@ public class Club {
     @Column(name = "leader_member_id")
     private Long leaderMemberId;
 
-    @Column(name = "club_name")
+    @Column(name = "club_name", nullable = false, length = 100)
     private String clubName;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "create_date")
@@ -30,6 +31,15 @@ public class Club {
     @Column(nullable = false)
     private int headcount;
 
-    protected Club() {} //constructor
+    public Club() {}
+
+    @Builder
+    protected Club(Long leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {
+        this.leaderMemberId = leaderMemberId;
+        this.clubName = clubName;
+        this.description = description;
+        this.createDate = createDate;
+        this.headcount = headcount;
+    }
 
 }

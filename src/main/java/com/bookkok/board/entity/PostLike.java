@@ -1,11 +1,13 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post_likes")
+@Getter
 public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

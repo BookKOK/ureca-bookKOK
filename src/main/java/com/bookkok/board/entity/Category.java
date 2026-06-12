@@ -1,9 +1,11 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 @Table(name = "categories")
+@Getter
 public class Category {
 
     @Id
@@ -11,9 +13,8 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CategoryType name = CategoryType.잡담;
+    @Column(nullable = false, length = 20)
+    private String name = "잡담";
 
     protected Category() {}
 }

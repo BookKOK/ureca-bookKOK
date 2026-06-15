@@ -16,11 +16,13 @@ public class Post {
     @Column(name = "post_id")
     private Long postId;
 
-    @Column(name = "author_member_id", nullable = false, length = 50)
-    private String authorMemberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_member_id", nullable = false)
+    private User authorMember;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "category_id", nullable = false)
-    private Long categoryId;
+    private Category category;
 
     @Column(nullable = false, length = 255)
     private String title;
@@ -43,9 +45,9 @@ public class Post {
     protected Post() {}
 
     @Builder
-    private Post(String authorMemberId, Long categoryId, String title, String content){
-        this.authorMemberId = authorMemberId;
-        this.categoryId = categoryId;
+    private Post(User authorMember, Category category, String title, String content){
+        this.authorMember = authorMember;
+        this.category = category;
         this.title = title;
         this.content = content;
     }

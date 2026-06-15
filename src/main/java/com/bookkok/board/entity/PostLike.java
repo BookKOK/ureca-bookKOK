@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.lang.reflect.Member;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,11 +16,13 @@ public class PostLike {
     @Column(name = "post_like_id")
     private Long postLikeId;
 
-    @Column(name = "post_id", nullable = false)
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-    @Column(name = "member_id", nullable = false, length = 50)
-    private String memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private User user;
 
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
@@ -27,8 +30,8 @@ public class PostLike {
     protected PostLike() {}
 
     @Builder
-    private PostLike(Long postID, String memberId){
-        this.postId = postID;
-        this.memberId = memberId;
+    private PostLike(Post post, User user){
+        this.post = post;
+        this.user = user;
     }
 }

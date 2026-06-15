@@ -1,6 +1,7 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -40,4 +41,12 @@ public class Post {
     private LocalDateTime updatedDate;
 
     protected Post() {}
+
+    @Builder
+    private Post(String authorMemberId, Long categoryId, String title, String content){
+        this.authorMemberId = authorMemberId;
+        this.categoryId = categoryId;
+        this.title = title;
+        this.content = content;
+    }
 }

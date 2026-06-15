@@ -1,6 +1,7 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
@@ -17,4 +18,9 @@ public class Category {
     private String name = "잡담";
 
     protected Category() {}
+
+    @Builder
+    private Category(String name){
+        this.name = (name == null || name.isBlank()) ? "잡담" : name;
+    }
 }

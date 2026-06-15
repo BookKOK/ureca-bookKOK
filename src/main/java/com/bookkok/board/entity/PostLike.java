@@ -1,6 +1,7 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -24,4 +25,10 @@ public class PostLike {
     private LocalDateTime createdDate;
 
     protected PostLike() {}
+
+    @Builder
+    private PostLike(Long postID, String memberId){
+        this.postId = postID;
+        this.memberId = memberId;
+    }
 }

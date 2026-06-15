@@ -1,6 +1,7 @@
 package com.bookkok.board.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -28,4 +29,11 @@ public class Comment {
     private LocalDateTime createdDate;
 
     protected Comment() {}
+
+    @Builder
+    private Comment(Long postId, String authorMemberId, String content){
+        this.postId = postId;
+        this.authorMemberId = authorMemberId;
+        this.content = content;
+    }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -23,7 +24,7 @@ public class Reservation {
     private Club clubId;
 
     @Column(name = "reservation_date", nullable = false)
-    private LocalDateTime reservationDate;
+    private LocalDate reservationDate;
 
     @Column(name = "reservation_court", nullable = false, length = 50)
     private String reservationCourt;
@@ -40,7 +41,7 @@ public class Reservation {
     public Reservation() {}
 
     @Builder
-    public Reservation(Club clubId, LocalDateTime reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
+    public Reservation(Club clubId, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
         this.clubId = clubId;
         this.reservationDate = reservationDate;
         this.reservationCourt = reservationCourt;

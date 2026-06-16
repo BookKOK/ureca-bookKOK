@@ -16,8 +16,8 @@ public class Club {
     @Column(name = "club_id")
     private Long clubId;
 
-    @Column(name = "leader_member_id")
-    private Long leaderMemberId;
+    @Column(name = "leader_member_id", length = 50)
+    private String leaderMemberId;
 
     @Column(name = "club_name", nullable = false, length = 100)
     private String clubName;
@@ -34,7 +34,7 @@ public class Club {
     public Club() {}
 
     @Builder
-    protected Club(Long leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {
+    protected Club(String leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {
         this.leaderMemberId = leaderMemberId;
         this.clubName = clubName;
         this.description = description;

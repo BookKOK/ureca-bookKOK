@@ -1,14 +1,17 @@
 package com.bookkok.board.entity;
 
+import com.bookkok.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
 @Getter
+@NoArgsConstructor
 public class Comment {
 
     @Id
@@ -21,7 +24,7 @@ public class Comment {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "author_member_id", nullable = false)
+    @JoinColumn(name = "author_member_id", nullable = false)
     private User authorMember;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -29,8 +32,6 @@ public class Comment {
 
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
-
-    protected Comment() {}
 
     @Builder
     private Comment(Post post, User authorMember, String content){

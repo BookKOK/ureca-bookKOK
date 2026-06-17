@@ -21,7 +21,7 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "club_id", nullable = false)
-    private Club clubId;
+    private Club club;
 
     @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
@@ -41,8 +41,8 @@ public class Reservation {
     public Reservation() {}
 
     @Builder
-    public Reservation(Club clubId, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
-        this.clubId = clubId;
+    public Reservation(Club club, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
+        this.club = club;
         this.reservationDate = reservationDate;
         this.reservationCourt = reservationCourt;
         this.reservationTime = reservationTime;

@@ -24,7 +24,7 @@ public class ReservationDto {
 
         public Reservation toEntity(Club club) {
             return Reservation.builder()
-                    .clubId(club)
+                    .club(club)
                     .reservationDate(this.reservationDate)
                     .reservationCourt(this.reservationCourt)
                     .reservationTime(this.reservationTime)
@@ -46,7 +46,7 @@ public class ReservationDto {
         public static ListResponse from(Reservation reservation) {
             return ListResponse.builder()
                     .reservationId(reservation.getReservationId())
-                    .clubName(reservation.getClubId().getClubName())
+                    .clubName(reservation.getClub().getClubName())
                     .reservationDate(reservation.getReservationDate())
                     .reservationCourt(reservation.getReservationCourt())
                     .reservationTime(reservation.getReservationTime())
@@ -70,8 +70,8 @@ public class ReservationDto {
         public static DetailResponse from(Reservation reservation) {
             return DetailResponse.builder()
                     .reservationId(reservation.getReservationId())
-                    .clubId(reservation.getClubId().getClubId())
-                    .clubName(reservation.getClubId().getClubName())
+                    .clubId(reservation.getClub().getClubId())
+                    .clubName(reservation.getClub().getClubName())
                     .reservationDate(reservation.getReservationDate())
                     .reservationCourt(reservation.getReservationCourt())
                     .reservationTime(reservation.getReservationTime())

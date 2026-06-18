@@ -3,12 +3,14 @@ package com.bookkok.club.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "clubs")
 @Getter
+@NoArgsConstructor
 public class Club {
 
     @Id
@@ -30,8 +32,6 @@ public class Club {
 
     @Column(nullable = false)
     private int headcount;
-
-    public Club() {}
 
     @Builder
     protected Club(String leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {

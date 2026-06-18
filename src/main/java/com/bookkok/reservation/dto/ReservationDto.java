@@ -75,6 +75,7 @@ public class ReservationDto {
                     .reservationDate(reservation.getReservationDate())
                     .reservationCourt(reservation.getReservationCourt())
                     .reservationTime(reservation.getReservationTime())
+                    .headcount(reservation.getHeadcount())
                     .createdDate(reservation.getCreatedDate())
                     .build();
         }

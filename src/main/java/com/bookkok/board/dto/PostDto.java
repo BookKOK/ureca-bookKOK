@@ -1,5 +1,6 @@
 package com.bookkok.board.dto;
 
+import com.bookkok.board.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,17 @@ public class PostDto {
             this.viewCount = viewCount;
             this.likeCount = likeCount;
         }
+
+        public static ListResponse from(Post post){
+            return ListResponse.builder()
+                    .postId(post.getPostId())
+                    .authorName(post.getAuthorMember().getMemberId())
+                    .categoryName(post.getCategory().getName())
+                    .viewCount(post.getViewCount())
+                    .likeCount(post.getLikeCount())
+                    .build();
+        }
+
     }
 
     // 글 상세 조회
@@ -71,6 +83,19 @@ public class PostDto {
             this.viewCount = viewCount;
             this.likeCount = likeCount;
             this.createdDate = createdDate;
+        }
+
+        public static DetailResponse from(Post post) {
+            return DetailResponse.builder()
+                    .postId(post.getPostId())
+                    .authorName(post.getAuthorMember().getMemberId())
+                    .categoryName(post.getCategory().getName())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .viewCount(post.getViewCount())
+                    .likeCount(post.getLikeCount())
+                    .createdDate(post.getCreatedDate())
+                    .build();
         }
     }
 }

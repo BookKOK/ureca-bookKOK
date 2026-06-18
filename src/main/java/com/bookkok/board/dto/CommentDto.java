@@ -1,5 +1,6 @@
 package com.bookkok.board.dto;
 
+import com.bookkok.board.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,5 +54,16 @@ public class CommentDto {
             this.createdDate = createdDate;
             this.isModified = isModified;
         }
+
+        public static Response from(Comment comment){
+            return Response.builder()
+                    .commentId(comment.getCommentId())
+                    .authorName(comment.getAuthorMember().getMemberId())
+                    .content(comment.getContent())
+                    .createdDate(comment.getCreatedDate())
+                    .isModified(!comment.getCreatedDate().isEqual(comment.getModifiedDate()))
+                    .build();
+        }
+
     }
 }

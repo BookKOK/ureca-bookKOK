@@ -76,7 +76,7 @@ public class UserDto {
 	
 	@Getter
 	@NoArgsConstructor
-	public static class ChangePasswordRequest {			// 비밀번호 변경
+	public static class UpdatePasswordRequest {			// 비밀번호 변경
 
 	    private String currentPassword;
 	    private String newPassword;
@@ -87,6 +87,13 @@ public class UserDto {
 	public static class UpdateProfileRequest {			// 이름 변경
 
 	    private String name;
+	}
+	
+	@Getter
+	@NoArgsConstructor
+	public class UpdateRoleRequest {					// 역할 변경
+
+	    private RoleType roleName;
 	}
 	
 	@Getter
@@ -103,11 +110,6 @@ public class UserDto {
 	    private String accessToken;
 	}
 	
-	@Getter
-	@NoArgsConstructor
-	public class UpdateRoleRequest {
-
-	    private RoleType roleName;
-	}
+	
 	
 }

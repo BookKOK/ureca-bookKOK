@@ -25,7 +25,6 @@ import lombok.Setter;
 @Entity
 @Table(name="users")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -50,6 +49,15 @@ public class User {
 	
 	@Column(name="phone_number")
 	private String phoneNumber;
+	
+	// 로그인 방식
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@Builder.Default
+	private Provider provider = Provider.LOCAL; // LOCAL, KAKAO
+	
+	@Column(name="provider_id")
+	private String providerId;
 	
 	@CreationTimestamp
 	@Column(name="reg_date", updatable = false)

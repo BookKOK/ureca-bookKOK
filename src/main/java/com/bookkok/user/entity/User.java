@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.bookkok.club.entity.Club;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,8 @@ import lombok.Setter;
 public class User {
 
 	@Id
-	@Column(name="member_id")
+	@Nonnull
+	@Column(name="member_id", updatable = false, unique = true)
 	private String memberId;
 	
 	@ManyToOne
@@ -51,6 +53,7 @@ public class User {
 	
 	@CreationTimestamp
 	@Column(name="reg_date", updatable = false)
+	@Nonnull
 	private LocalDateTime regDate;
 
 	

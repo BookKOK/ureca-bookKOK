@@ -2,6 +2,8 @@ package com.bookkok.user.dto;
 
 import java.time.LocalDateTime;
 
+import javax.management.relation.Role;
+
 import com.bookkok.user.entity.RoleType;
 import com.bookkok.user.entity.User;
 
@@ -74,7 +76,7 @@ public class UserDto {
 	
 	@Getter
 	@NoArgsConstructor
-	public static class ChangePasswordRequest {			// 비밀번호 변경
+	public static class UpdatePasswordRequest {			// 비밀번호 변경
 
 	    private String currentPassword;
 	    private String newPassword;
@@ -82,9 +84,16 @@ public class UserDto {
 	
 	@Getter
 	@NoArgsConstructor
-	public static class UpdateProfileRequest {			// 닉네임 변경
+	public static class UpdateProfileRequest {			// 이름 변경
 
 	    private String name;
+	}
+	
+	@Getter
+	@NoArgsConstructor
+	public class UpdateRoleRequest {					// 역할 변경
+
+	    private RoleType roleName;
 	}
 	
 	@Getter
@@ -100,5 +109,7 @@ public class UserDto {
 
 	    private String accessToken;
 	}
-	// 로그인
+	
+	
+	
 }

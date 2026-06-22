@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.bookkok.club.entity.Club;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,14 +25,14 @@ import lombok.Setter;
 @Entity
 @Table(name="users")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class User {
 
 	@Id
-	@Column(name="member_id")
+	@Nonnull
+	@Column(name="member_id", updatable = false, unique = true)
 	private String memberId;
 	
 	@ManyToOne
@@ -49,8 +50,18 @@ public class User {
 	@Column(name="phone_number")
 	private String phoneNumber;
 	
+	// 로그인 방식
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@Builder.Default
+	private Provider provider = Provider.LOCAL; // LOCAL, KAKAO
+	
+	@Column(name="provider_id")
+	private String providerId;
+	
 	@CreationTimestamp
 	@Column(name="reg_date", updatable = false)
+	@Nonnull
 	private LocalDateTime regDate;
 
 	

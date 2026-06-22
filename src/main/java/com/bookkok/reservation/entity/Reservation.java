@@ -4,13 +4,17 @@ import com.bookkok.club.entity.Club;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "reservations")
 @Getter
+@NoArgsConstructor
 public class Reservation {
 
     @Id
@@ -20,10 +24,10 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "club_id", nullable = false)
-    private Club clubId;
+    private Club club;
 
     @Column(name = "reservation_date", nullable = false)
-    private LocalDateTime reservationDate;
+    private LocalDate reservationDate;
 
     @Column(name = "reservation_court", nullable = false, length = 50)
     private String reservationCourt;
@@ -34,14 +38,13 @@ public class Reservation {
     @Column(nullable = false)
     private int headcount;
 
+    @CreationTimestamp
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    public Reservation() {}
-
     @Builder
-    public Reservation(Club clubId, LocalDateTime reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
-        this.clubId = clubId;
+    public Reservation(Club club, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
+        this.club = club;
         this.reservationDate = reservationDate;
         this.reservationCourt = reservationCourt;
         this.reservationTime = reservationTime;

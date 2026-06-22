@@ -3,10 +3,12 @@ package com.bookkok.board.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "categories")
 @Getter
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -16,8 +18,6 @@ public class Category {
 
     @Column(nullable = false, length = 20)
     private String name = "잡담";
-
-    protected Category() {}
 
     @Builder
     private Category(String name){

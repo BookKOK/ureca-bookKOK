@@ -1,5 +1,6 @@
 package com.bookkok.club.service;
 
+import com.bookkok.club.dto.ClubDto;
 import com.bookkok.club.entity.Club;
 import com.bookkok.club.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +18,14 @@ public class ClubService {
 
     //1. 단체 개설 (생성)
     @Transactional
-    public Long createClub(String leaderMemberId, String clubName, String description, int headcount) {
-        if (clubRepository.existsByClubName(clubName)) {
+    public Long createClub(String leaderId, ClubDto.CreateRequest request) {
+        if (clubRepository.existsByClubName(request.getClubName())) {
             throw new IllegalArgumentException("이미 존재하는 단체 이름입니다.");
         }
 
-        Club club = Club.builder()
-                .leaderMemberId(leaderMemberId)
-                .clubName(clubName)
-                .description(description)
-                .headcount(headcount)
-                .build();
+        Club club = request.toEntity(leaderId);
 
         Club savedClub = clubRepository.save(club);
-
         return savedClub.getClubId();
     }
 

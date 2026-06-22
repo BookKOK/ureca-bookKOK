@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class Reservation {
     @Column(nullable = false)
     private int headcount;
 
+    @CreationTimestamp
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 

@@ -18,6 +18,7 @@ public class ClubController {
     private final ClubService clubService;
 
     //1. 단체 개설
+    @PostMapping
     public ResponseEntity<Long> createClub(@RequestParam String leaderId,
                                            @RequestBody ClubDto.CreateRequest request) {
 
@@ -43,7 +44,7 @@ public class ClubController {
         return ResponseEntity.ok(responses);
     }
 
-    //4. 단체 이름 키워드 검색 (GET /api/clubs/my?leaderId=user123)
+    //4. 단체 이름 키워드 검색 (GET /api/clubs/search?keyword=테니스)
     @GetMapping("/search")
     public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
         List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
@@ -51,6 +52,13 @@ public class ClubController {
                 .toList();
         
         return ResponseEntity.ok(responses);
+    }
+
+    //5. 내 단체 조회
+    @GetMapping("/my")
+    public ResponseEntity<ClubDto.DetailResponse> getMyClub(@RequestParam Long leaderId) {
+        Club myClub = clubService.findClubById(leaderId);
+        return ResponseEntity.ok(ClubDto.DetailResponse.from(myClub));
     }
 
 }

@@ -1,6 +1,8 @@
 package com.bookkok.admin.service;
 
 import com.bookkok.admin.dto.AdminCategoryDto;
+import com.bookkok.admin.repository.AdminCategoryRepository;
+import com.bookkok.board.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,8 @@ import java.util.List;
 @Transactional
 public class AdminCategoryService {
 
+    private final AdminCategoryRepository adminCategoryRepository;
+
     /**
      * 게시판 카테고리를 생성
      *
@@ -24,14 +28,27 @@ public class AdminCategoryService {
     public AdminCategoryDto.Response createCategory(
             AdminCategoryDto.CreateRequest request) {
 
-        // TODO
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // 2. 카테고리 이름 중복 여부 확인
-        // 3. Category Entity 생성
-        // 4. DB 저장
-        // 5. Response DTO 생성 및 반환
+        // TODO : 관리자 권한 확인
 
-        return null;
+        // 2. 카테고리 이름 중복 여부 확인
+        if (adminCategoryRepository.existsByName(request.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리입니다.");
+        }
+
+        // 3. Category Entity 생성
+        Category category = Category.builder()
+                .name(request.getName())
+                .build();
+
+        // 4. DB 저장
+        Category savedCategory = adminCategoryRepository.save(category);
+
+        // 5. Response DTO 생성 및 반환
+        return AdminCategoryDto.Response.builder()
+                .categoryId(savedCategory.getCategoryId())
+                .name(savedCategory.getName())
+                .build();
     }
 
     /**
@@ -45,15 +62,31 @@ public class AdminCategoryService {
             Long categoryId,
             AdminCategoryDto.UpdateRequest request) {
 
-        // TODO
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // 2. categoryId로 카테고리 조회
-        // 3. 존재 여부 확인
-        // 4. 이름 중복 여부 확인
-        // 5. 카테고리 정보 수정
-        // 6. Response DTO 생성 및 반환
+        // TODO : 관리자 권한 확인
 
-        return null;
+        // 2. categoryId로 카테고리 조회
+        Category category = adminCategoryRepository.findById(categoryId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("카테고리가 존재하지 않습니다."));
+
+        // 3. 존재 여부 확인
+        // findById()에서 확인 완료
+
+        // 4. 이름 중복 여부 확인
+        if (adminCategoryRepository.existsByName(request.getName())
+                && !category.getName().equals(request.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리입니다.");
+        }
+
+        // 5. 카테고리 정보 수정
+        category.updateName(request.getName());
+
+        // 6. Response DTO 생성 및 반환
+        return AdminCategoryDto.Response.builder()
+                .categoryId(category.getCategoryId())
+                .name(category.getName())
+                .build();
     }
 
     /**
@@ -62,15 +95,24 @@ public class AdminCategoryService {
      * @return 전체 카테고리 목록
      */
     @Transactional(readOnly = true)
-    public List<AdminCategoryDto.Response> getCategories() {
+    public List<AdminCategoryDto.Response> getAllCategories() {
 
-        // TODO
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // 2. 전체 카테고리 조회
-        // 3. Response DTO 리스트로 변환
-        // 4. 반환
+        // TODO : 관리자 권한 확인
 
-        return null;
+        // 2. 전체 카테고리 조회
+        List<Category> categories = adminCategoryRepository.findAll();
+
+        // 3. Response DTO 리스트로 변환
+        List<AdminCategoryDto.Response> responses = categories.stream()
+                .map(category -> AdminCategoryDto.Response.builder()
+                        .categoryId(category.getCategoryId())
+                        .name(category.getName())
+                        .build())
+                .toList();
+
+        // 4. 반환
+        return responses;
     }
 
     /**
@@ -79,11 +121,19 @@ public class AdminCategoryService {
      * @param categoryId 삭제할 카테고리 ID
      */
     public void deleteCategory(Long categoryId) {
-        // TODO
-        // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // 2. categoryId로 카테고리 조회
-        // 3. 존재 여부 확인
-        // 4. 삭제
 
+        // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
+        // TODO : 관리자 권한 확인
+
+        // 2. categoryId로 카테고리 조회
+        Category category = adminCategoryRepository.findById(categoryId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("카테고리가 존재하지 않습니다."));
+
+        // 3. 존재 여부 확인
+        // findById()에서 확인 완료
+
+        // 4. 삭제
+        adminCategoryRepository.delete(category);
     }
 }

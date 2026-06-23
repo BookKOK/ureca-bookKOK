@@ -56,8 +56,8 @@ public class ClubController {
 
     //5. 내 단체 조회
     @GetMapping("/my")
-    public ResponseEntity<ClubDto.DetailResponse> getMyClub(@RequestParam Long leaderId) {
-        Club myClub = clubService.findClubById(leaderId);
+    public ResponseEntity<ClubDto.DetailResponse> getMyClub(@RequestParam String leaderId) {
+        Club myClub = clubService.findClubByLeader(leaderId);
         return ResponseEntity.ok(ClubDto.DetailResponse.from(myClub));
     }
 

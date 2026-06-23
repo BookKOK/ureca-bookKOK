@@ -7,9 +7,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class CategoryDto {
+
     @Getter
     @NoArgsConstructor
-    public static class Response {
+    public static class CreateRequest{
+        private String categoryName;
+
+        @Builder
+        private CreateRequest(String categoryName){
+            this.categoryName = categoryName;
+        }
+
+        public Category toEntity(){
+            return Category.builder()
+                    .name(this.categoryName)
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class Response{
         private Long categoryId;
         private String categoryName;
 

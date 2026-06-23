@@ -1,6 +1,8 @@
 package com.bookkok.board.dto;
 
+import com.bookkok.board.entity.Category;
 import com.bookkok.board.entity.Post;
+import com.bookkok.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,15 @@ public class PostDto {
             this.categoryId = categoryId;
             this.title = title;
             this.content = content;
+        }
+
+        public Post toEntity(User authorMember, Category category){
+            return Post.builder()
+                    .title(this.title)
+                    .content(this.content)
+                    .authorMember(authorMember)
+                    .category(category)
+                    .build();
         }
     }
 
@@ -52,6 +63,7 @@ public class PostDto {
                     .postId(post.getPostId())
                     .authorName(post.getAuthorMember().getMemberId())
                     .categoryName(post.getCategory().getName())
+                    .title(post.getTitle())
                     .viewCount(post.getViewCount())
                     .likeCount(post.getLikeCount())
                     .build();

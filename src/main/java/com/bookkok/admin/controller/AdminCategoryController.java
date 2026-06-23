@@ -17,7 +17,7 @@ public class AdminCategoryController {
     private final AdminCategoryService adminCategoryService;
 
     /**
-     * 게시판 카테고리를 생성합니다.
+     * 게시판 카테고리를 생성
      *
      * @param request 생성할 카테고리 정보
      * @return 생성된 카테고리 정보
@@ -31,7 +31,7 @@ public class AdminCategoryController {
     }
 
     /**
-     * 게시판 카테고리를 수정합니다.
+     * 게시판 카테고리를 수정
      *
      * @param categoryId 수정할 카테고리 ID
      * @param request 수정할 카테고리 정보
@@ -47,7 +47,7 @@ public class AdminCategoryController {
     }
 
     /**
-     * 게시판 카테고리 목록을 조회합니다.
+     * 게시판 카테고리 목록을 조회
      *
      * @return 전체 카테고리 목록
      */
@@ -59,7 +59,7 @@ public class AdminCategoryController {
     }
 
     /**
-     * 게시판 카테고리를 삭제합니다.
+     * 게시판 카테고리를 삭제
      *
      * @param categoryId 삭제할 카테고리 ID
      * @return HTTP 204 No Content

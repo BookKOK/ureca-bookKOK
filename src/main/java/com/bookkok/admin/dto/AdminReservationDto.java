@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.bookkok.reservation.entity.Reservation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +44,19 @@ public class AdminReservationDto {
         private LocalTime reservationTime;
         private int headcount;
         private LocalDateTime createdDate;
+
+        public static SummaryResponse from(Reservation reservation) {
+            return SummaryResponse.builder()
+                    .reservationId(reservation.getReservationId())
+                    .clubId(reservation.getClub().getClubId())
+                    .clubName(reservation.getClub().getClubName())
+                    .reservationDate(reservation.getReservationDate())
+                    .reservationCourt(reservation.getReservationCourt())
+                    .reservationTime(reservation.getReservationTime())
+                    .headcount(reservation.getHeadcount())
+                    .createdDate(reservation.getCreatedDate())
+                    .build();
+        }
     }
 
     // 예약 상세 조회에서 사용할 예약 상세 정보입니다.

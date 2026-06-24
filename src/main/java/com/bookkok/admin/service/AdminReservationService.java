@@ -33,22 +33,20 @@ public class AdminReservationService {
         // 1. 전체 예약 조회
         List<Reservation> reservations = adminReservationRepository.findAll();
 
+        /*
         // 2. SummaryResponse 변환
-        List<AdminReservationDto.SummaryResponse> responses = reservations.stream()
-                .map(reservation -> AdminReservationDto.SummaryResponse.builder()
-                        .reservationId(reservation.getReservationId())
-                        .clubId(reservation.getClub().getClubId())
-                        .clubName(reservation.getClub().getClubName())
-                        .reservationDate(reservation.getReservationDate())
-                        .reservationCourt(reservation.getReservationCourt())
-                        .reservationTime(reservation.getReservationTime())
-                        .headcount(reservation.getHeadcount())
-                        .createdDate(reservation.getCreatedDate())
-                        .build())
-                .toList();
+        List<AdminReservationDto.SummaryResponse> responses =
+                reservations.stream()
+                        .map(AdminReservationDto.SummaryResponse::from)
+                        .toList();
 
         // 3. 결과 반환
         return responses;
+         */
+
+        return reservations.stream()
+                .map(AdminReservationDto.SummaryResponse::from)
+                .toList();
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.bookkok.admin.controller;
 
 import com.bookkok.admin.dto.AdminReservationDto;
+import com.bookkok.admin.service.AdminReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

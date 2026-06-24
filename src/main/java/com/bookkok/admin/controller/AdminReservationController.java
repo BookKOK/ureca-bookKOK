@@ -1,15 +1,18 @@
 package com.bookkok.admin.controller;
 
+import com.bookkok.admin.dto.AdminReservationDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/reservations")
+@RequiredArgsConstructor
 public class AdminReservationController {
 
-    private final AdminReservationSrvice adminReservationServicel;
-
+    private final AdminReservationService adminReservationService;
 
     /**
      * 전체 예약 조회
@@ -19,8 +22,10 @@ public class AdminReservationController {
      * @return 전체 예약 목록
      */
     @GetMapping
-    public ResponseEntity<?> getAllReservations() {
-        return ResponseEntity.ok(adminReservationService.getAllReservations());
+    public ResponseEntity<List<AdminReservationDto.SummaryResponse>> getAllReservations() {
+
+        return ResponseEntity.ok(
+                adminReservationService.getAllReservations());
     }
 
     /**
@@ -32,8 +37,11 @@ public class AdminReservationController {
      * @return 검색된 예약 목록
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchReservations(@RequestParam String keyword) {
-        return ResponseEntity.ok(adminReservationService.searchReservations(keyword));
+    public ResponseEntity<List<AdminReservationDto.SummaryResponse>> searchReservations(
+            @RequestParam String keyword) {
+
+        return ResponseEntity.ok(
+                adminReservationService.searchReservations(keyword));
     }
 
     /**
@@ -42,12 +50,14 @@ public class AdminReservationController {
      * 관리자 예약 강제 취소
      *
      * @param reservationId 예약 ID
-     * @return 취소 완료 메시지
+     * @return 예약 강제 취소 결과
      */
     @DeleteMapping("/{reservationId}")
-    public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId) {
-        adminReservationService.cancelReservation(reservationId);
-        return ResponseEntity.ok("예약이 강제 취소되었습니다.");
+    public ResponseEntity<AdminReservationDto.ForceCancelResponse> cancelReservation(
+            @PathVariable Long reservationId) {
+
+        return ResponseEntity.ok(
+                adminReservationService.cancelReservation(reservationId));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.bookkok.admin.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,24 +53,25 @@ public class AdminReservationService {
     /**
      * 예약 검색
      *
-     * @param keyword 검색어
+     * @param condition 검색 조건
      * @return 검색된 예약 목록
      */
     @Transactional(readOnly = true)
     public List<AdminReservationDto.SummaryResponse> searchReservations(
-            String keyword) {
+            AdminReservationDto.SearchCondition condition) {
 
-        // 1. 관리자 권한 확인
+        // 1. 검색 조건 조회
+        List<Reservation> reservations =
+                adminReservationRepository.findByReservationDate(
+                        condition.getStartDate());
 
-        // 2. 검색 조건 조회
+        // 2. SummaryResponse 변환
 
-        // 3. SummaryResponse 변환
-
-        // 4. 결과 반환
-
-        return null;
+        // 3. 결과 반환
+        return reservations.stream()
+                .map(AdminReservationDto.SummaryResponse::from)
+                .toList();
     }
-
     /**
      * 예약 강제 취소
      *

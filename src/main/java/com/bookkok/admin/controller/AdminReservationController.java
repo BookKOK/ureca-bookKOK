@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,15 +35,15 @@ public class AdminReservationController {
      *
      * 검색어를 이용한 예약 정보 검색
      *
-     * @param keyword 검색어
+     * @param condition 검색어
      * @return 검색된 예약 목록
      */
     @GetMapping("/search")
     public ResponseEntity<List<AdminReservationDto.SummaryResponse>> searchReservations(
-            @RequestParam String keyword) {
+            AdminReservationDto.SearchCondition condition) {
 
         return ResponseEntity.ok(
-                adminReservationService.searchReservations(keyword));
+                adminReservationService.searchReservations(condition));
     }
 
     /**

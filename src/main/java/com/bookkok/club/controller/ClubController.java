@@ -17,7 +17,12 @@ public class ClubController {
 
     private final ClubService clubService;
 
-    //1. 단체 개설
+    /**
+     * 1. 단체 개설 [HTTP POST /api/clubs?leaderId={leaderId}]
+     * @param leaderId : 단체 개설 요청을 보낸 단체장의 고유 계정 아이디 (memberId)
+     * @param request : 생성할 단체의 이름과 소개글이 담긴 JSON 바디 데이터
+     * @return HTTP 201 (Created) 및 생성된 단체의 고유 식별자 값
+     */
     @PostMapping
     public ResponseEntity<Long> createClub(@RequestParam String leaderId,
                                            @RequestBody ClubDto.CreateRequest request) {
@@ -26,7 +31,11 @@ public class ClubController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClubId);
     }
 
-    //2. 단체 상세 조회 (GET /api/clubs/{clubId})
+    /**
+     * 2. 단체 상세 조회 [HTTP GET /api/clubs/{clubId}]
+     * @param clubId : URL 경로 변수로 전달된 대상 단체의 고유 식별자
+     * @return HTTP 200 (OK) 및 단체 상세 정보가 직렬화된 DTO 응답 객체
+     */
     @GetMapping("/{clubId}")
     public ResponseEntity<ClubDto.DetailResponse> getClub(@PathVariable Long clubId) {
         Club foundClub = clubService.findClubById(clubId);
@@ -34,7 +43,10 @@ public class ClubController {
         return ResponseEntity.ok(ClubDto.DetailResponse.from(foundClub));
     }
 
-    //3. 단체 전체 목록 조회 (GET /api/clubs)
+    /**
+     * 3. 단체 전체 목록 조회 [HTTP GET /api/clubs]
+     * @return HTTP 200 (OK) 및 단체 요약 정보 DTO 리스트
+     */
     @GetMapping
     public ResponseEntity<List<ClubDto.ListResponse>> getAllClubs() {
         List<ClubDto.ListResponse> responses = clubService.findAllClubs().stream()
@@ -44,7 +56,11 @@ public class ClubController {
         return ResponseEntity.ok(responses);
     }
 
-    //4. 단체 이름 키워드 검색 (GET /api/clubs/search?keyword=테니스)
+    /**
+     * 4. 단체 이름 키워드 검색 [HTTP GET /api/clubs/search?keyword={keyword}]
+     * @param keyword 검색할 단체명 키워드 문자열
+     * @return HTTP 200 (OK) 및 검색 조건에 부합하는 단체 요약 정보 DTO 리스트
+     */
     @GetMapping("/search")
     public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
         List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
@@ -54,7 +70,11 @@ public class ClubController {
         return ResponseEntity.ok(responses);
     }
 
-    //5. 내 단체 조회
+    /**
+     * 5. 내 단체 조회 [HTTP GET /api/clubs/my?leaderId={leaderId}]
+     * @param leaderId 단체장의 고유 계정 아이디 (memberId)
+     * @return HTTP 200 (OK) 및 해당 단체의 상세 정보가 직렬화된 DTO 응답 객체
+     */
     @GetMapping("/my")
     public ResponseEntity<ClubDto.DetailResponse> getMyClub(@RequestParam String leaderId) {
         Club myClub = clubService.findClubByLeader(leaderId);

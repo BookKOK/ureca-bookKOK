@@ -2,6 +2,8 @@ package com.bookkok.board.repository;
 
 import com.bookkok.board.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByCreatedDateDesc();
 
     // 제목 / 내용으로 검색
-    List<Post> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword);
+    @Query("select p from Post p where p.title like %:keyword% or p.content like %:keyword%")
+    List<Post> searchByTitleOrContent(@Param("keyword") String keyword);
 }
-
 

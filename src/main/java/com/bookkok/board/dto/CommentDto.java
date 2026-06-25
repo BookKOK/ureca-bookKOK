@@ -66,12 +66,14 @@ public class CommentDto {
         }
 
         public static Response from(Comment comment){
+            boolean modified = comment.getModifiedDate() != null
+                    && !comment.getCreatedDate().isEqual(comment.getModifiedDate());
             return Response.builder()
                     .commentId(comment.getCommentId())
                     .authorName(comment.getAuthorMember().getMemberId())
                     .content(comment.getContent())
                     .createdDate(comment.getCreatedDate())
-                    .isModified(!comment.getCreatedDate().isEqual(comment.getModifiedDate()))
+                    .isModified(modified)
                     .build();
         }
 

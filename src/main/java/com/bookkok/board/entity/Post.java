@@ -71,4 +71,6 @@ public class Post {
     public void increaseLikeCount() {
         this.likeCount++;
     }
+
+    public void increaseViewCount() { this.viewCount++; }
 }

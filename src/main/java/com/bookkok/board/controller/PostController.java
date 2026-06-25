@@ -40,26 +40,28 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(
+    public ResponseEntity<PostDto.DetailResponse> updatePost(
             @PathVariable Long postId,
-            @RequestBody PostDto.UpdateRequest request){
+            @RequestBody PostDto.UpdateRequest request,
+            @AuthenticationPrincipal User loginUser){
 
-        postService.updatePost(postId, request);
-        return ResponseEntity.ok().build();
+        PostDto.DetailResponse response = postService.updatePost(postId, request, loginUser);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId){
-        postService.deletePost(postId);
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+                                           @AuthenticationPrincipal User loginUser){
+        postService.deletePost(postId, loginUser);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Void> toggleLike(
             @PathVariable Long postId,
-            @AuthenticationPrincipal User user){
+            @AuthenticationPrincipal User loginUser){
 
-        postService.toggleLike(postId, user);
+        postService.toggleLike(postId, loginUser);
         return ResponseEntity.ok().build();
     }
 }

@@ -117,13 +117,13 @@ public class PostDto {
     public static class UpdateRequest{
         private String title;
         private String content;
-        private Category category;
+        private Long categoryId;
 
         @Builder
-        private UpdateRequest(String title, String content, Category category){
+        private UpdateRequest(String title, String content, Long categoryId){
             this.title = title;
             this.content = content;
-            this.category = category;
+            this.categoryId = categoryId;
         }
     }
 }

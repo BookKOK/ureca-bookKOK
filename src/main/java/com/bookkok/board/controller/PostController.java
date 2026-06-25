@@ -6,6 +6,7 @@ import com.bookkok.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Long> createPost(
             @RequestBody PostDto.CreateRequest request,
-            User loginUser
+            @AuthenticationPrincipal User loginUser
             ){
         Long postId = postService.createPost(request, loginUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(postId);
@@ -38,4 +39,27 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{postId}")
+    public ResponseEntity<Void> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostDto.UpdateRequest request){
+
+        postService.updatePost(postId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId){
+        postService.deletePost(postId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Void> toggleLike(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal User user){
+
+        postService.toggleLike(postId, user);
+        return ResponseEntity.ok().build();
+    }
 }

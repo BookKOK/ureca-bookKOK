@@ -48,14 +48,15 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public void updateComment(Long commentId, CommentDto.UpdateRequest request, User loginUser){
+    public CommentDto.Response updateComment(Long commentId, CommentDto.UpdateRequest request, User loginUser){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
         if(!comment.getAuthorMember().getMemberId().equals(loginUser.getMemberId())){
             throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
         }
-
         comment.updateComment(request.getContent());
+
+        return CommentDto.Response.from(comment);
     }
 
     // 댓글 삭제

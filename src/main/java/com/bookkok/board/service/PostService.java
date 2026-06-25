@@ -47,46 +47,58 @@ public class PostService {
     }
 
     // 게시글 상세 조회
-    @Transactional(readOnly = true)
+    @Transactional
     public PostDto.DetailResponse getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+
+        post.increaseViewCount();
 
         return PostDto.DetailResponse.from(post);
     }
 
     // 게시글 수정
     @Transactional
-    public void updatePost(Long postId, PostDto.UpdateRequest request){
+    public PostDto.DetailResponse updatePost(Long postId, PostDto.UpdateRequest request, User loginUser){
         Post post = postRepository.findById(postId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-        Category category = categoryRepository.findById(request.getCategory().getCategoryId())
+
+        if (!post.getAuthorMember().getMemberId().equals(loginUser.getMemberId())) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        Category category = categoryRepository.findById(request.getCategoryId())
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
         post.updatePost(request.getTitle(), request.getContent(), category);
+
+        return PostDto.DetailResponse.from(post);
     }
 
     // 게시글 삭제
     @Transactional
-    public void deletePost(Long postId){
-        if(!postRepository.existsById(postId)){
-            throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+    public void deletePost(Long postId, User loginUser){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        if (!post.getAuthorMember().getMemberId().equals(loginUser.getMemberId())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
-        postRepository.deleteById(postId);
+
+        postRepository.delete(post);
     }
 
     // 게시글 좋아요
     @Transactional
-    public void toggleLike(Long postId, User user){
+    public void toggleLike(Long postId, User loginUser){
         Post post = postRepository.findById(postId).orElseThrow();
 
-        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, user);
+        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, loginUser);
 
         if(postLike.isPresent()){
             postLikeRepository.delete(postLike.get());
             post.decreaseLikeCount();
         }else{
-            PostLike newLike = PostLike.builder().post(post).user(user).build();
+            PostLike newLike = PostLike.builder().post(post).user(loginUser).build();
             postLikeRepository.save(newLike);
             post.increaseLikeCount();
         }

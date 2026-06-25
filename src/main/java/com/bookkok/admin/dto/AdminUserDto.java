@@ -2,7 +2,7 @@ package com.bookkok.admin.dto;
 
 import java.time.LocalDateTime;
 
-import com.bookkok.user.entity.RoleType;
+import com.bookkok.member.entity.RoleType;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

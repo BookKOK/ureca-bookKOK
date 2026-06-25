@@ -1,8 +1,9 @@
 package com.bookkok.club.dto;
 
 import com.bookkok.club.entity.Club;
-import com.bookkok.user.entity.RoleType;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.RoleType;
+import com.bookkok.member.entity.Member;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -81,7 +82,7 @@ public class ClubDto {
         private String name;
         private RoleType roleName;
 
-        public static MemberResponse from(User user) {
+        public static MemberResponse from(Member user) {
             return MemberResponse.builder()
                     .memberId(user.getMemberId())
                     .name(user.getName())

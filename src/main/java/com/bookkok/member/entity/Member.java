@@ -1,8 +1,15 @@
-package com.bookkok.user.entity;
+package com.bookkok.member.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Persistable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.bookkok.club.entity.Club;
 
@@ -28,7 +35,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Member implements Persistable<String> {
 
 	@Id
 	@Nonnull
@@ -37,7 +44,7 @@ public class User {
 	
 	@ManyToOne
 	@JoinColumn(name = "club_id")
-	private Club clubId;
+	private Club club;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name="role_name")
@@ -61,8 +68,34 @@ public class User {
 	
 	@CreationTimestamp
 	@Column(name="reg_date", updatable = false)
-	@Nonnull
 	private LocalDateTime regDate;
 
+	@Override
+	public @Nullable String getId() {
+		// TODO Auto-generated method stub
+		return memberId;
+	}
+
+	@Override
+	public boolean isNew() {
+		return regDate == null;
+	}
+	
+	public void changePassword(String password) {
+	    this.password = password;
+	}
+
+	
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities(){
+//		return Collections.singleton(
+//	            new SimpleGrantedAuthority("ROLE_" + roleName.name())
+//	    );
+//	}
+//	
+//	@Override
+//	public String getUsername() {
+//		return this.memberId;
+//	}
 	
 }

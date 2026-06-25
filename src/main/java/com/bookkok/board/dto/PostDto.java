@@ -110,4 +110,20 @@ public class PostDto {
                     .build();
         }
     }
+
+    // 글 수정
+    @Getter
+    @NoArgsConstructor
+    public static class UpdateRequest{
+        private String title;
+        private String content;
+        private Category category;
+
+        @Builder
+        private UpdateRequest(String title, String content, Category category){
+            this.title = title;
+            this.content = content;
+            this.category = category;
+        }
+    }
 }

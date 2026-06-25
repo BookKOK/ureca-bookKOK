@@ -25,6 +25,7 @@ public class CategoryDto {
         }
     }
 
+    // 카테고리 조회
     @Getter
     @NoArgsConstructor
     public static class Response{

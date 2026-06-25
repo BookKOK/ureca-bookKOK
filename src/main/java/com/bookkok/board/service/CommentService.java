@@ -33,18 +33,40 @@ public class CommentService {
     }
     
     // 특정 게시글 댓글 목록 조회
+    @Transactional(readOnly = true)
     public List<CommentDto.Response> getCommentsByPost(Long postId){
         if(!postRepository.existsById(postId)){
             throw new IllegalArgumentException("존재하지 않는 게시물입니다.");
         }
 
-        List<Comment> comments = commentRepository.findByPost_PostId(postId);
+        List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedDateAsc(postId);
 
         return comments.stream()
                 .map(CommentDto.Response::from)
                 .collect(Collectors.toList());
     }
 
+    // 댓글 수정
+    @Transactional
+    public void updateComment(Long commentId, CommentDto.UpdateRequest request, User loginUser){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        if(!comment.getAuthorMember().getMemberId().equals(loginUser.getMemberId())){
+            throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
+        }
 
+        comment.updateComment(request.getContent());
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId, User loginUser){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        if(!comment.getAuthorMember().getMemberId().equals(loginUser.getMemberId())){
+            throw new IllegalArgumentException("본인이 작성한 댓글만 삭제할 수 있습니다.");
+        }
+        commentRepository.delete(comment);
+    }
 
 }

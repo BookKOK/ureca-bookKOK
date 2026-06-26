@@ -2,7 +2,9 @@ package com.bookkok.member.controller;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +45,12 @@ public class MemberController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@DeleteMapping("/me")
+	public ResponseEntity<Void> deleteMember(Authentication auth){
+		memberService.deleteMember(auth.getName());
+		
+		return ResponseEntity.ok().build();
+	}
 
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bookkok.member.repository.MemberRepository;
+import com.bookkok.member.repository.TokenRepository;
 import com.bookkok.member.dto.TokenDto.TokenResponse;
 import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.dto.MemberDto.ProfileResponse;
@@ -32,6 +33,7 @@ import lombok.extern.log4j.Log4j2;
 public class MemberService { // implements UserDetailsService 
 	
 	private final MemberRepository memberRepository;
+	private final TokenRepository tokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthService authService;
 	private final TokenService tokenService;
@@ -97,7 +99,7 @@ public class MemberService { // implements UserDetailsService
 	/**
 	 * 비밀번호 변경
 	 * @param request
-	 * @return TokenResponse
+	 * @return 
 	 */
 	public void resetPassword(UpdatePasswordRequest request) {
 		
@@ -111,6 +113,22 @@ public class MemberService { // implements UserDetailsService
 		}
 		
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
+	}
+	
+	@Transactional
+	/**
+	 * 회원 soft delete
+	 * @param String memberId
+	 * @return 
+	 */
+	public void deleteMember(String memberId) {
+		
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+		
+		member.deleteMember();
+		
+		tokenRepository.deleteByMember_MemberId(memberId);
 	}
 	
 }

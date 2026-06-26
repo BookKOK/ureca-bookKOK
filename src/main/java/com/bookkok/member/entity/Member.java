@@ -69,6 +69,13 @@ public class Member implements Persistable<String> {
 	@CreationTimestamp
 	@Column(name="reg_date", updatable = false)
 	private LocalDateTime regDate;
+	
+	@Column(name = "is_deleted", nullable = false)
+	private boolean isDeleted = false;
+
+	public void deleteMember() {
+	    this.isDeleted = true;
+	}
 
 	@Override
 	public @Nullable String getId() {

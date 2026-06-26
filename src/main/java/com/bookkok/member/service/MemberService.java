@@ -90,8 +90,10 @@ public class MemberService { // implements UserDetailsService
 	public TokenResponse login(LoginRequest request) {
 		authService.authenticateLogin(request);
 		
-		Member member = memberRepository.findById(request.getMemberId()).get();
-		return tokenService.createToken(member);
+		Member member = memberRepository.findById(request.getMemberId())
+				.orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));;
+		
+				return tokenService.createToken(member);
 	}
 	
 	

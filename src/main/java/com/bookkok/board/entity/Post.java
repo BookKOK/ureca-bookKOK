@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bookkok.member.entity.Member;
 
@@ -46,6 +48,9 @@ public class Post {
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     @Builder
     private Post(Member authorMember, Category category, String title, String content){
         this.authorMember = authorMember;
@@ -53,4 +58,20 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
+    public void updatePost(String title, String content, Category category){
+        this.title = title;
+        this.content = content;
+        this.category = category;
+    }
+
+    public void decreaseLikeCount() {
+        if(this.likeCount > 0) this.likeCount--;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void increaseViewCount() { this.viewCount++; }
 }

@@ -21,18 +21,18 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
 
-//    public TokenResponse createToken(ProfileResponse memberDTO) {
-//    	TokenResponse tokenDTO = tokenProvider.createTokenDTO(memberDTO.getMemberId(), memberDTO.getRoleName());
-//        Member member = memberRepository.findById(memberDTO.getMemberId()).orElseThrow(() -> new RuntimeException("Wrong Access (member does not exist)"));
-//        RefreshToken refreshToken = RefreshToken.builder()
-//                .member(member)
-//                .token(tokenDTO.getRefreshToken())
-//                .build();
-//
-//        tokenRepository.save(refreshToken);
-//
-//        return tokenDTO;
-//    }
+    public TokenResponse createToken(ProfileResponse memberDTO) {
+    	TokenResponse tokenDTO = tokenProvider.createTokenDTO(memberDTO.getMemberId(), memberDTO.getRoleName());
+        Member member = memberRepository.findById(memberDTO.getMemberId()).orElseThrow(() -> new RuntimeException("Wrong Access (member does not exist)"));
+        RefreshToken refreshToken = RefreshToken.builder()
+                .member(member)
+                .token(tokenDTO.getRefreshToken())
+                .build();
+
+        tokenRepository.save(refreshToken);
+
+        return tokenDTO;
+    }
 
     /**
      * 소셜 로그인 시 MemberDTO를 받아와서 토큰을 생성

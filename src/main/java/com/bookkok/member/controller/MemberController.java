@@ -1,5 +1,6 @@
 package com.bookkok.member.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,7 +36,8 @@ public class MemberController {
 		log.info("회원가입 API 진입");
 		memberService.signup(request);
 		
-		return ResponseEntity.ok("회원가입 성공");
+		return ResponseEntity.status(HttpStatus.CREATED)
+		        .body("회원가입 성공");
 	}
 	
 	@PostMapping("/password/reset")

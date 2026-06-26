@@ -5,11 +5,12 @@ import com.bookkok.board.entity.Comment;
 import com.bookkok.board.entity.Post;
 import com.bookkok.board.repository.CommentRepository;
 import com.bookkok.board.repository.PostRepository;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sound.midi.MetaMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,11 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public Long createComment(CommentDto.CreateRequest request, User loginUser){
+    public Long createComment(CommentDto.CreateRequest request, Member loginMember){
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
 
-        Comment comment = request.toEntity(post, loginUser);
+        Comment comment = request.toEntity(post, loginMember);
 
         Comment savedComment = commentRepository.save(comment);
         return savedComment.getCommentId();
@@ -48,10 +49,10 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentDto.Response updateComment(Long commentId, CommentDto.UpdateRequest request, User loginUser){
+    public CommentDto.Response updateComment(Long commentId, CommentDto.UpdateRequest request, Member loginMember){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
-        if(!comment.getAuthorMember().getMemberId().equals(loginUser.getMemberId())){
+        if(!comment.getAuthorMember().getMemberId().equals(loginMember.getMemberId())){
             throw new IllegalArgumentException("본인이 작성한 댓글만 수정할 수 있습니다.");
         }
         comment.updateComment(request.getContent());
@@ -61,10 +62,10 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, User loginUser){
+    public void deleteComment(Long commentId, Member loginMember){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
-        if(!comment.getAuthorMember().getMemberId().equals(loginUser.getMemberId())){
+        if(!comment.getAuthorMember().getMemberId().equals(loginMember.getMemberId())){
             throw new IllegalArgumentException("본인이 작성한 댓글만 삭제할 수 있습니다.");
         }
         commentRepository.delete(comment);

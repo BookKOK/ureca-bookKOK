@@ -3,7 +3,7 @@ package com.bookkok.board.controller;
 import com.bookkok.board.dto.CommentDto;
 import com.bookkok.board.entity.Comment;
 import com.bookkok.board.service.CommentService;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class CommentController {
     public ResponseEntity<Long> createComment(
             @PathVariable Long postId,
             @RequestBody CommentDto.CreateRequest request,
-            @AuthenticationPrincipal User loginUser){
+            @AuthenticationPrincipal Member loginMember){
 
-        Long commentId = commentService.createComment(request, loginUser);
+        Long commentId = commentService.createComment(request, loginMember);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentId);
     }
 
@@ -39,16 +39,16 @@ public class CommentController {
     public ResponseEntity<CommentDto.Response> updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentDto.UpdateRequest request,
-            @AuthenticationPrincipal User loginUser){
-        CommentDto.Response response = commentService.updateComment(commentId, request, loginUser);
+            @AuthenticationPrincipal Member loginMember){
+        CommentDto.Response response = commentService.updateComment(commentId, request, loginMember);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
-                                              @AuthenticationPrincipal User loginUser){
+                                              @AuthenticationPrincipal Member loginMember){
 
-        commentService.deleteComment(commentId, loginUser);
+        commentService.deleteComment(commentId, loginMember);
         return ResponseEntity.ok().build();
     }
 

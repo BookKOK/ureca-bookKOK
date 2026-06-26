@@ -26,14 +26,14 @@ public class PostLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member user;
+    private Member member;
 
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
     @Builder
-    private PostLike(Post post, Member user){
+    private PostLike(Post post, Member member){
         this.post = post;
-        this.user = user;
+        this.member = member;
     }
 }

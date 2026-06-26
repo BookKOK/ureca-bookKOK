@@ -92,7 +92,7 @@ public class PostService {
     public void toggleLike(Long postId, Member loginMember){
         Post post = postRepository.findById(postId).orElseThrow();
 
-        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, loginMember);
+        Optional<PostLike> postLike = postLikeRepository.findByPostAndMember(post, loginMember);
 
         if(postLike.isPresent()){
             postLikeRepository.delete(postLike.get());

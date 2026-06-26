@@ -2,10 +2,10 @@ package com.bookkok.admin.dto;
 
 import java.time.LocalDateTime;
 
-import com.bookkok.user.entity.Provider;
-import com.bookkok.user.entity.RoleType;
+import com.bookkok.member.entity.Provider;
+import com.bookkok.member.entity.RoleType;
 
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,21 +39,23 @@ public class AdminUserDto {
         private String memberId;
         private String name;
         private String email;
+        private String phoneNumber;
         private RoleType roleName;
+        private Long clubId;
         private String clubName;
         private Boolean blocked;
 
-        public static SummaryResponse from(User user) {
+        public static SummaryResponse from(Member member) {
 
             return SummaryResponse.builder()
-                    .memberId(user.getMemberId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .roleName(user.getRoleName())
-                    .clubName(user.getClub() != null
-                            ? user.getClub().getClubName()
+                    .memberId(member.getMemberId())
+                    .name(member.getName())
+                    .email(member.getEmail())
+                    .roleName(member.getRoleName())
+                    .clubName(member.getClub() != null
+                            ? member.getClub().getClubName()
                             : null)
-                    .blocked(user.getBlocked())
+                    .blocked(member.getBlocked())
                     .build();
         }
     }
@@ -76,23 +78,23 @@ public class AdminUserDto {
         private Provider provider;
         private LocalDateTime regDate;
 
-        public static DetailResponse from(User user) {
+        public static DetailResponse from(Member member) {
 
             return DetailResponse.builder()
-                    .memberId(user.getMemberId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .phoneNumber(user.getPhoneNumber())
-                    .roleName(user.getRoleName())
-                    .clubId(user.getClub() != null
-                            ? user.getClub().getClubId()
+                    .memberId(member.getMemberId())
+                    .name(member.getName())
+                    .email(member.getEmail())
+                    .phoneNumber(member.getPhoneNumber())
+                    .roleName(member.getRoleName())
+                    .clubId(member.getClub() != null
+                            ? member.getClub().getClubId()
                             : null)
-                    .clubName(user.getClub() != null
-                            ? user.getClub().getClubName()
+                    .clubName(member.getClub() != null
+                            ? member.getClub().getClubName()
                             : null)
-                    .blocked(user.getBlocked())
-                    .provider(user.getProvider())
-                    .regDate(user.getRegDate())
+                    .blocked(member.getBlocked())
+                    .provider(member.getProvider())
+                    .regDate(member.getRegDate())
                     .build();
         }
     }
@@ -118,11 +120,11 @@ public class AdminUserDto {
         private Boolean blocked;
         private LocalDateTime changedAt;
 
-        public static BlockResponse from(User user) {
+        public static BlockResponse from(Member member) {
 
             return BlockResponse.builder()
-                    .memberId(user.getMemberId())
-                    .blocked(user.getBlocked())
+                    .memberId(member.getMemberId())
+                    .blocked(member.getBlocked())
                     .changedAt(LocalDateTime.now())
                     .build();
         }

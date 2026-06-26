@@ -1,4 +1,4 @@
-package com.bookkok.user.entity;
+package com.bookkok.member.entity;
 
 public enum Provider {
     LOCAL,

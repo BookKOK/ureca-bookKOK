@@ -1,6 +1,5 @@
 package com.bookkok.board.entity;
 
-import com.bookkok.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.bookkok.member.entity.Member;
 
 @Entity
 @Table(name = "posts")
@@ -23,7 +24,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_member_id", nullable = false)
-    private User authorMember;
+    private Member authorMember;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -51,7 +52,7 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    private Post(User authorMember, Category category, String title, String content){
+    private Post(Member authorMember, Category category, String title, String content){
         this.authorMember = authorMember;
         this.category = category;
         this.title = title;

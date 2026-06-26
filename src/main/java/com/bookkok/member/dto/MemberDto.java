@@ -91,26 +91,26 @@ public class MemberDto {
 	    private String newPassword;
 	}
 	
-	@Getter
-	@NoArgsConstructor
-	public static class UpdateProfileRequest {			// 이름 변경
-
-	    private String name;
-	}
-	
-	@Getter
-	@NoArgsConstructor
-	public class UpdateRoleRequest {					// 역할 변경
-
-	    private RoleType roleName;
-	}
-	
-	@Getter
-	@NoArgsConstructor
-	public static class WithdrawRequest {				// 회원 탈퇴
-
-	    private String password;
-	}
+//	@Getter
+//	@NoArgsConstructor
+//	public static class UpdateProfileRequest {			// 이름 변경
+//
+//	    private String name;
+//	}
+//	
+//	@Getter
+//	@NoArgsConstructor
+//	public class UpdateRoleRequest {					// 역할 변경
+//
+//	    private RoleType roleName;
+//	}
+//	
+//	@Getter
+//	@NoArgsConstructor
+//	public static class WithdrawRequest {				// 회원 탈퇴
+//
+//	    private String password;
+//	}
 	
 	@Getter
 	@NoArgsConstructor

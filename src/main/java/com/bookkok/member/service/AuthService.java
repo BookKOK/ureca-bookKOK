@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.bookkok.member.repository.MemberRepository;
+import com.bookkok.member.repository.TokenRepository;
 import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService implements UserDetailsService {
 	
 	private final MemberRepository memberRepository;
+	private final TokenRepository tokenRepository;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public void authenticateLogin(LoginRequest requestDTO) {
@@ -48,4 +50,8 @@ public class AuthService implements UserDetailsService {
 				member.getPassword(),
 				Collections.singleton(grantedAuthority));
 	}
+	
+	public void logout(String memberId) {
+        tokenRepository.deleteByMember_MemberId(memberId);
+    }
 }

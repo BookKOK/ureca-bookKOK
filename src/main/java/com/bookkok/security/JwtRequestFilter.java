@@ -43,7 +43,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     	
     	// HTTP 헤더에서 JWT 가져옴
         String jwt = resolveToken(request);
-
         
         // 토큰 값이 있고, 유효한 값인지 확인(서명/만료 체크)
         if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {

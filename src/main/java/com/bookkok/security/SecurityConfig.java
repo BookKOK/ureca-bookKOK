@@ -25,7 +25,6 @@ public class SecurityConfig {
 	private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final LogoutHandlerImpl logoutHandler;
 
     private static final String[] URL_TO_PERMIT = {
             "/api/members/signup",
@@ -63,14 +62,6 @@ public class SecurityConfig {
 //        		.anyRequest().permitAll()
                 .requestMatchers(URL_TO_PERMIT).permitAll()
                 .anyRequest().authenticated()
-        )
-    	
-        .logout(logout -> logout
-                .logoutUrl("/api/auth/logout")
-                .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((req, res, auth) -> {
-                    SecurityContextHolder.clearContext();
-                })
         );
 
 	    /* 5. JWT 필터 추가

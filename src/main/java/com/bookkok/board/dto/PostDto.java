@@ -2,7 +2,7 @@ package com.bookkok.board.dto;
 
 import com.bookkok.board.entity.Category;
 import com.bookkok.board.entity.Post;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class PostDto {
             this.content = content;
         }
 
-        public Post toEntity(User authorMember, Category category){
+        public Post toEntity(Member authorMember, Category category){
             return Post.builder()
                     .title(this.title)
                     .content(this.content)

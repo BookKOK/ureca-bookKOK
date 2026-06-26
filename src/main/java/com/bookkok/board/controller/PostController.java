@@ -2,7 +2,7 @@ package com.bookkok.board.controller;
 
 import com.bookkok.board.dto.PostDto;
 import com.bookkok.board.service.PostService;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,9 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Long> createPost(
             @RequestBody PostDto.CreateRequest request,
-            @AuthenticationPrincipal User loginUser
+            @AuthenticationPrincipal Member loginMember
             ){
-        Long postId = postService.createPost(request, loginUser);
+        Long postId = postService.createPost(request, loginMember);
         return ResponseEntity.status(HttpStatus.CREATED).body(postId);
     }
 
@@ -43,25 +43,25 @@ public class PostController {
     public ResponseEntity<PostDto.DetailResponse> updatePost(
             @PathVariable Long postId,
             @RequestBody PostDto.UpdateRequest request,
-            @AuthenticationPrincipal User loginUser){
+            @AuthenticationPrincipal Member loginMember){
 
-        PostDto.DetailResponse response = postService.updatePost(postId, request, loginUser);
+        PostDto.DetailResponse response = postService.updatePost(postId, request, loginMember);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId,
-                                           @AuthenticationPrincipal User loginUser){
-        postService.deletePost(postId, loginUser);
+                                           @AuthenticationPrincipal Member loginMember){
+        postService.deletePost(postId, loginMember);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Void> toggleLike(
             @PathVariable Long postId,
-            @AuthenticationPrincipal User loginUser){
+            @AuthenticationPrincipal Member loginMember){
 
-        postService.toggleLike(postId, loginUser);
+        postService.toggleLike(postId, loginMember);
         return ResponseEntity.ok().build();
     }
 }

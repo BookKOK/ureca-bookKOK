@@ -23,4 +23,8 @@ public class Category {
     private Category(String name){
         this.name = (name == null || name.isBlank()) ? "잡담" : name;
     }
+
+    public void updateName(String name) {
+        this.name = (name == null || name.isBlank()) ? "잡담" : name;
+    }
 }

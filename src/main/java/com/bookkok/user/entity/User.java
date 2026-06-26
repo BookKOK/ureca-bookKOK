@@ -64,5 +64,16 @@ public class User {
 	@Nonnull
 	private LocalDateTime regDate;
 
+	@Column(name = "is_blocked", nullable = false)
+	@Builder.Default
+	private Boolean blocked = false;
+	//차단
+	public void block() {
+		this.blocked = true;
+	}
+	//차단해제
+	public void unblock() {
+		this.blocked = false;
+	}
 	
 }

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bookkok.admin.dto.AdminUserDto;
 import com.bookkok.admin.repository.AdminUserRepository;
 import com.bookkok.admin.service.AdminUserService;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +31,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public List<AdminUserDto.SummaryResponse> getAllUsers() {
 
         // 1. 회원 목록 조회
-        List<User> users = adminUserRepository.findAll();
+        List<Member> users = adminUserRepository.findAll();
 
         // 2. DTO 변환
         List<AdminUserDto.SummaryResponse> responses = users.stream()
@@ -52,14 +52,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     public AdminUserDto.DetailResponse getUser(String memberId) {
 
         // 1. 회원 조회
-        User user = adminUserRepository.findById(memberId)
+        Member member = adminUserRepository.findById(memberId)
                 .orElseThrow();
 
         // TODO : 회원 조회 예외 처리 추가
 
         // 2. DTO 변환
         AdminUserDto.DetailResponse response =
-                AdminUserDto.DetailResponse.from(user);
+                AdminUserDto.DetailResponse.from(member);
 
         // 3. 결과 반환
         return response;
@@ -76,7 +76,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public AdminUserDto.BlockResponse blockUser(String memberId) {
 
         // 1. 회원 조회
-        User user = adminUserRepository.findById(memberId)
+        Member member = adminUserRepository.findById(memberId)
                 .orElseThrow();
 
         // TODO : 회원 조회 예외 처리 추가
@@ -84,11 +84,11 @@ public class AdminUserServiceImpl implements AdminUserService {
         // TODO : 관리자 권한 검증 추가
 
         // 2. 회원 차단
-        user.block();
+        member.block();
 
         // 3. DTO 변환
         AdminUserDto.BlockResponse response =
-                AdminUserDto.BlockResponse.from(user);
+                AdminUserDto.BlockResponse.from(member);
 
         // 4. 결과 반환
         return response;
@@ -105,7 +105,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public AdminUserDto.BlockResponse unblockUser(String memberId) {
 
         // 1. 회원 조회
-        User user = adminUserRepository.findById(memberId)
+        Member user = adminUserRepository.findById(memberId)
                 .orElseThrow();
 
         // TODO : 회원 조회 예외 처리 추가

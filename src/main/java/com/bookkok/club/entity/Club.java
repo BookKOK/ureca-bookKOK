@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "clubs")
 @Getter
 @NoArgsConstructor
-public class Club {
+public class Club extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,6 @@ public class Club {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
-
     @Column(nullable = false)
     private int headcount;
 
@@ -38,7 +35,6 @@ public class Club {
         this.leaderMemberId = leaderMemberId;
         this.clubName = clubName;
         this.description = description;
-        this.createDate = createDate;
         this.headcount = headcount;
     }
 

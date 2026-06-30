@@ -1,13 +1,15 @@
 package com.bookkok.admin.service;
 
-import com.bookkok.admin.dto.AdminCategoryDto;
-import com.bookkok.admin.repository.AdminCategoryRepository;
-import com.bookkok.board.entity.Category;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.bookkok.admin.dto.AdminCategoryDto;
+import com.bookkok.admin.repository.AdminCategoryRepository;
+import com.bookkok.board.entity.Category;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 관리자 게시판 카테고리 관련 비즈니스 로직을 처리하는 서비스
@@ -18,6 +20,7 @@ import java.util.List;
 public class AdminCategoryService {
 
     private final AdminCategoryRepository adminCategoryRepository;
+    private final AdminAuthorizationService adminAuthorizationService;
 
     /**
      * 게시판 카테고리를 생성
@@ -29,7 +32,7 @@ public class AdminCategoryService {
             AdminCategoryDto.CreateRequest request) {
 
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // TODO : 관리자 권한 확인
+        adminAuthorizationService.validateAdmin();
 
         // 2. 카테고리 이름 중복 여부 확인
         if (adminCategoryRepository.existsByName(request.getName())) {
@@ -63,7 +66,7 @@ public class AdminCategoryService {
             AdminCategoryDto.UpdateRequest request) {
 
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // TODO : 관리자 권한 확인
+        adminAuthorizationService.validateAdmin();
 
         // 2. categoryId로 카테고리 조회
         Category category = adminCategoryRepository.findById(categoryId)
@@ -98,7 +101,7 @@ public class AdminCategoryService {
     public List<AdminCategoryDto.Response> getAllCategories() {
 
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // TODO : 관리자 권한 확인
+        adminAuthorizationService.validateAdmin();
 
         // 2. 전체 카테고리 조회
         List<Category> categories = adminCategoryRepository.findAll();
@@ -123,7 +126,7 @@ public class AdminCategoryService {
     public void deleteCategory(Long categoryId) {
 
         // 1. 카테고리 관리는 관리자만 가능하기에 권한이 Admin인지 확인
-        // TODO : 관리자 권한 확인
+        adminAuthorizationService.validateAdmin();
 
         // 2. categoryId로 카테고리 조회
         Category category = adminCategoryRepository.findById(categoryId)

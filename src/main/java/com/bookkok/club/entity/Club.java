@@ -38,4 +38,9 @@ public class Club extends BaseTimeEntity {
         this.headcount = headcount;
     }
 
+    //단체장 위임 시 단체장 id 변경을 위한 메서드
+    public void updateLeader(String newLeaderId) {
+        this.leaderMemberId = newLeaderId;
+    }
+
 }

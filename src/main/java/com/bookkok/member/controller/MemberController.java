@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookkok.member.dto.TokenDto.TokenResponse;
-import com.bookkok.member.dto.TokenDto.SocialLoginResponse;
 import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.dto.MemberDto.SignupRequest;
 import com.bookkok.member.dto.MemberDto.UpdatePasswordRequest;

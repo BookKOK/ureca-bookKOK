@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookkok.member.dto.MemberDto.LoginRequest;
-import com.bookkok.member.dto.TokenDto.SocialLoginResponse;
+//import com.bookkok.member.dto.TokenDto.SocialLoginResponse;
 import com.bookkok.member.dto.TokenDto.TokenResponse;
 import com.bookkok.member.repository.TokenRepository;
 import com.bookkok.member.service.AuthService;
@@ -28,7 +28,7 @@ public class AuthController {
 	private final AuthService authService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<SocialLoginResponse> memberLogin(@RequestBody LoginRequest request){
+	public ResponseEntity<TokenResponse> memberLogin(@RequestBody LoginRequest request){
 		TokenResponse tokenDTO = memberService.login(request);
 		ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", tokenDTO.getRefreshToken())
@@ -39,14 +39,14 @@ public class AuthController {
                 .path("/")
                 .build();
 
-		SocialLoginResponse tokenResponseDTO = SocialLoginResponse.builder()
-                .isNewMember(false)
-                .accessToken(tokenDTO.getAccessToken())
-                .build();
+//		SocialLoginResponse tokenResponseDTO = SocialLoginResponse.builder()
+//                .isNewMember(false)
+//                .accessToken(tokenDTO.getAccessToken())
+//                .build();
 
         return ResponseEntity.ok()
         		.header("Set-Cookie", responseCookie.toString())
-        		.body(tokenResponseDTO);
+        		.body(tokenDTO);
 	}
 	
 	@PostMapping("/logout")

@@ -26,16 +26,6 @@ public class MemberDto {
 	    private String email;
 	    private String phoneNumber;
 
-	    public Member toEntity() {
-	        return Member.builder()
-	                .memberId(memberId)
-	                .password(password)
-	                .name(name)
-	                .email(email)
-	                .phoneNumber(phoneNumber)
-	                .roleName(RoleType.USER)
-	                .build();
-	    }
 	}
 	
 	@Getter

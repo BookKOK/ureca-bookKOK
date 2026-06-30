@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>API Test Page</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+        .result-box { background: #eee; padding: 10px; min-height: 40px; white-space: pre-wrap; font-family: monospace; }
+        input, textarea, button { margin: 5px 0; display: block; }
+        button { cursor: pointer; padding: 5px 10px; }
+        hr { border: 0; border-top: 1px dashed #aaa; }
+    </style>
+</head>
+<body>
+
+<h1>🚀 BookKOK API 기능 테스트</h1>
+<p>디자인 없이 기능 작동 및 응답(콘솔 및 결과창)만 확인하는 페이지입니다.</p>
+
+<div class="section">
+    <h2>📁 1. 카테고리 (Category)</h2>
+    <input type="text" id="categoryName" placeholder="카테고리 이름 입력">
+    <button onclick="createCategory()">카테고리 등록 (POST /api/categories)</button>
+    <button onclick="getCategories()">카테고리 목록 전체 조회 (GET /api/categories)</button>
+
+    <div class="result-box" id="categoryResult">결과가 여기에 표시됩니다.</div>
+</div>
+
+<div class="section">
+    <h2>📝 2. 게시글 (Post)</h2>
+    <input type="number" id="postCategoryId" placeholder="카테고리 ID (Long)">
+    <input type="text" id="postTitle" placeholder="게시글 제목">
+    <textarea id="postContent" placeholder="게시글 내용"></textarea>
+    <button onclick="createPost()">게시글 등록 (POST /api/posts)</button>
+    <button onclick="getPosts()">게시글 목록 전체 조회 (GET /api/posts)</button>
+
+    <hr>
+    <input type="number" id="targetPostId" placeholder="대상 게시글 ID (postId)">
+    <button onclick="getPostDetail()">게시글 상세 조회 (GET /api/posts/{id})</button>
+    <button onclick="updatePost()">게시글 수정 (PUT /api/posts/{id})</button>
+    <button onclick="deletePost()">게시글 삭제 (DELETE /api/posts/{id})</button>
+    <button onclick="togglePostLike()">게시글 좋아요 토글 (POST /api/posts/{id}/like)</button>
+
+    <div class="result-box" id="postResult">결과가 여기에 표시됩니다.</div>
+</div>
+
+<div class="section">
+    <h2>💬 3. 댓글 (Comment)</h2>
+    <input type="number" id="commentPostId" placeholder="게시글 ID (postId)">
+    <textarea id="commentContent" placeholder="댓글 내용 작성"></textarea>
+    <button onclick="createComment()">댓글 등록 (POST /api/posts/{postId}/comments)</button>
+
+    <hr>
+    <input type="number" id="targetCommentId" placeholder="대상 댓글 ID (commentId)">
+    <textarea id="updateCommentContent" placeholder="수정할 댓글 내용"></textarea>
+    <button onclick="updateComment()">댓글 수정 (PUT /api/comments/{id})</button>
+    <button onclick="deleteComment()">댓글 삭제 (DELETE /api/comments/{id})</button>
+
+    <div class="result-box" id="commentResult">결과가 여기에 표시됩니다.</div>
+</div>
+
+<script>
+    // 공통 응답 처리 함수
+    async function handleResponse(response, resultId) {
+        const resultBox = document.getElementById(resultId);
+        try {
+            // HTTP 상태 코드 확인
+            let text = `Status: ${response.status} ${response.statusText}\n`;
+
+            // 204나 수정/삭제처럼 데이터(Body)가 없는 경우 처리
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                text += JSON.stringify(data, null, 2);
+            } else {
+                const rawText = await response.text();
+                text += rawText ? rawText : "(보낸 데이터 없음 - 빈 상자 응답)";
+            }
+            resultBox.innerText = text;
+        } catch (err) {
+            resultBox.innerText = "에러 발생: " + err.message;
+        }
+    }
+
+    // ==========================================
+    // 1. 카테고리 기능
+    // ==========================================
+    async function createCategory() {
+        const name = document.getElementById('categoryName').value;
+        const response = await fetch('/api/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ categoryName: name }) // DTO 스펙에 맞춰 수정 필요
+        });
+        handleResponse(response, 'categoryResult');
+    }
+
+    async function getCategories() {
+        const response = await fetch('/api/categories');
+        handleResponse(response, 'categoryResult');
+    }
+
+    // ==========================================
+    // 2. 게시글 기능
+    // ==========================================
+    async function createPost() {
+        const categoryId = document.getElementById('postCategoryId').value;
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ categoryId, title, content })
+        });
+        handleResponse(response, 'postResult');
+    }
+
+    async function getPosts() {
+        const response = await fetch('/api/posts');
+        handleResponse(response, 'postResult');
+    }
+
+    async function getPostDetail() {
+        const postId = document.getElementById('targetPostId').value;
+        const response = await fetch(`/api/posts/${postId}`);
+        handleResponse(response, 'postResult');
+    }
+
+    async function updatePost() {
+        const postId = document.getElementById('targetPostId').value;
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+
+        const response = await fetch(`/api/posts/${postId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content })
+        });
+        handleResponse(response, 'postResult');
+    }
+
+    async function deletePost() {
+        const postId = document.getElementById('targetPostId').value;
+        const response = await fetch(`/api/posts/${postId}`, { method: 'DELETE' });
+        handleResponse(response, 'postResult');
+    }
+
+    async function togglePostLike() {
+        const postId = document.getElementById('targetPostId').value;
+        const response = await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+        handleResponse(response, 'postResult');
+    }
+
+    // ==========================================
+    // 3. 댓글 기능
+    // ==========================================
+    async function createComment() {
+        const postId = document.getElementById('commentPostId').value;
+        const content = document.getElementById('commentContent').value;
+
+        const response = await fetch(`/api/posts/${postId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        handleResponse(response, 'commentResult');
+    }
+
+    async function updateComment() {
+        const commentId = document.getElementById('targetCommentId').value;
+        const content = document.getElementById('updateCommentContent').value;
+
+        const response = await fetch(`/api/comments/${commentId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+        handleResponse(response, 'commentResult');
+    }
+
+    async function deleteComment() {
+        const commentId = document.getElementById('targetCommentId').value;
+        const response = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' });
+        handleResponse(response, 'commentResult');
+    }
+</script>
+</body>
+</html>

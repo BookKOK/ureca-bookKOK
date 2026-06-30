@@ -7,7 +7,7 @@ import com.bookkok.board.entity.PostLike;
 import com.bookkok.board.repository.CategoryRepository;
 import com.bookkok.board.repository.PostLikeRepository;
 import com.bookkok.board.repository.PostRepository;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +26,11 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public Long createPost(PostDto.CreateRequest request, User loginUser){
+    public Long createPost(PostDto.CreateRequest request, Member loginMember){
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
-        Post post = request.toEntity(loginUser, category);
+        Post post = request.toEntity(loginMember, category);
 
         Post savedPost = postRepository.save(post);
         return savedPost.getPostId();
@@ -59,11 +59,11 @@ public class PostService {
 
     // 게시글 수정
     @Transactional
-    public PostDto.DetailResponse updatePost(Long postId, PostDto.UpdateRequest request, User loginUser){
+    public PostDto.DetailResponse updatePost(Long postId, PostDto.UpdateRequest request, Member loginMember){
         Post post = postRepository.findById(postId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        if (!post.getAuthorMember().getMemberId().equals(loginUser.getMemberId())) {
+        if (!post.getAuthorMember().getMemberId().equals(loginMember.getMemberId())) {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
         }
 
@@ -77,10 +77,10 @@ public class PostService {
 
     // 게시글 삭제
     @Transactional
-    public void deletePost(Long postId, User loginUser){
+    public void deletePost(Long postId, Member loginMember){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-        if (!post.getAuthorMember().getMemberId().equals(loginUser.getMemberId())) {
+        if (!post.getAuthorMember().getMemberId().equals(loginMember.getMemberId())) {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
 
@@ -89,16 +89,16 @@ public class PostService {
 
     // 게시글 좋아요
     @Transactional
-    public void toggleLike(Long postId, User loginUser){
+    public void toggleLike(Long postId, Member loginMember){
         Post post = postRepository.findById(postId).orElseThrow();
 
-        Optional<PostLike> postLike = postLikeRepository.findByPostAndUser(post, loginUser);
+        Optional<PostLike> postLike = postLikeRepository.findByPostAndMember(post, loginMember);
 
         if(postLike.isPresent()){
             postLikeRepository.delete(postLike.get());
             post.decreaseLikeCount();
         }else{
-            PostLike newLike = PostLike.builder().post(post).user(loginUser).build();
+            PostLike newLike = PostLike.builder().post(post).member(loginMember).build();
             postLikeRepository.save(newLike);
             post.increaseLikeCount();
         }

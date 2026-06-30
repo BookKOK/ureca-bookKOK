@@ -2,7 +2,7 @@ package com.bookkok.board.dto;
 
 import com.bookkok.board.entity.Comment;
 import com.bookkok.board.entity.Post;
-import com.bookkok.user.entity.User;
+import com.bookkok.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +24,11 @@ public class CommentDto {
             this.content = content;
         }
 
-        public Comment toEntity(Post post, User loginUser){
+        public Comment toEntity(Post post, Member loginMember){
             return Comment.builder()
                     .content(this.content)
                     .post(post)
-                    .authorMember(loginUser)
+                    .authorMember(loginMember)
                     .build();
         }
     }

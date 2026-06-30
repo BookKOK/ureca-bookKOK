@@ -1,5 +1,6 @@
 package com.bookkok.member.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookkok.member.dto.TokenDto.TokenResponse;
-import com.bookkok.member.dto.TokenDto.SocialLoginResponse;
 import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.dto.MemberDto.SignupRequest;
 import com.bookkok.member.dto.MemberDto.UpdatePasswordRequest;
@@ -32,10 +32,10 @@ public class MemberController {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@RequestBody SignupRequest request){
-		log.info("회원가입 API 진입");
 		memberService.signup(request);
 		
-		return ResponseEntity.ok("회원가입 성공");
+		return ResponseEntity.status(HttpStatus.CREATED)
+		        .body("회원가입 성공");
 	}
 	
 	@PostMapping("/password/reset")
@@ -46,8 +46,8 @@ public class MemberController {
 	}
 	
 	@DeleteMapping("/me")
-	public ResponseEntity<Void> deleteMember(Authentication auth){
-		memberService.deleteMember(auth.getName());
+	public ResponseEntity<Void> deleteMember(Authentication authentication){
+		memberService.deleteMember(authentication.getName());
 		
 		return ResponseEntity.ok().build();
 	}

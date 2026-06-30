@@ -21,24 +21,20 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
 
-    public TokenResponse createToken(ProfileResponse memberDTO) {
-    	TokenResponse tokenDTO = tokenProvider.createTokenDTO(memberDTO.getMemberId(), memberDTO.getRoleName());
-        Member member = memberRepository.findById(memberDTO.getMemberId()).orElseThrow(() -> new RuntimeException("Wrong Access (member does not exist)"));
-        RefreshToken refreshToken = RefreshToken.builder()
-                .member(member)
-                .token(tokenDTO.getRefreshToken())
-                .build();
+    // 소셜 로그인 때 사용할 예정
+//    public TokenResponse createToken(ProfileResponse memberDTO) {
+//    	TokenResponse tokenDTO = tokenProvider.createTokenDTO(memberDTO.getMemberId(), memberDTO.getRoleName());
+//        Member member = memberRepository.findById(memberDTO.getMemberId()).orElseThrow(() -> new RuntimeException("Wrong Access (member does not exist)"));
+//        RefreshToken refreshToken = RefreshToken.builder()
+//                .member(member)
+//                .token(tokenDTO.getRefreshToken())
+//                .build();
+//
+//        tokenRepository.save(refreshToken);
+//
+//        return tokenDTO;
+//    }
 
-        tokenRepository.save(refreshToken);
-
-        return tokenDTO;
-    }
-
-    /**
-     * 소셜 로그인 시 MemberDTO를 받아와서 토큰을 생성
-     * @param member
-     * @return tokenDTO
-     */
     public TokenResponse createToken(Member member) {
     	TokenResponse tokenDTO = tokenProvider.createTokenDTO(member.getMemberId(), member.getRoleName());
         RefreshToken refreshToken = tokenRepository.findByMember(member)

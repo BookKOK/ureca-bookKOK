@@ -2,6 +2,8 @@ package com.bookkok.member.dto;
 
 import java.time.Duration;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,14 +24,13 @@ public class TokenDto {
 		private Duration duration;
 	}
 	
-	@Getter
-	@Builder
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class SocialLoginResponse {
-		private String accessToken;
-		private boolean isNewMember;
-	}
-
-	
+//	@Getter
+//	@Builder
+//	@NoArgsConstructor
+//	@AllArgsConstructor
+////	 소셜 로그인 구현
+//	public static class SocialLoginResponse {
+//		private String accessToken;
+//		private boolean isNewMember;
+//	}
 }

@@ -60,7 +60,7 @@ public class JwtTokenProvider {
         //토큰 생성시간
         Instant now = Instant.from(OffsetDateTime.now());
         
-        //accessToken 만료시간
+        //refreshToken 만료시간
         Instant refreshTokenExpirationDate = now.plusMillis(refreshTokenValidationTime);
 
         //accessToken 생성

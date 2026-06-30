@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bookkok.member.repository.MemberRepository;
 import com.bookkok.member.repository.TokenRepository;
+import com.bookkok.util.PhoneNumberUtil;
 import com.bookkok.member.dto.TokenDto.TokenResponse;
 import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.dto.MemberDto.ProfileResponse;
@@ -73,10 +74,14 @@ public class MemberService { // implements UserDetailsService
 	        throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
 	    }
 		
-		Member member = request.toEntity();
-		
-		member.changePassword(
-				passwordEncoder.encode(member.getPassword()));
+		Member member = Member.builder()
+	            .memberId(request.getMemberId())
+	            .password(passwordEncoder.encode(request.getPassword()))
+	            .name(request.getName())
+	            .email(request.getEmail())
+	            .phoneNumber(PhoneNumberUtil.normalize(request.getPhoneNumber()))
+	            .roleName(RoleType.USER)
+	            .build();
 		
 		memberRepository.save(member);
 	}
@@ -90,8 +95,10 @@ public class MemberService { // implements UserDetailsService
 	public TokenResponse login(LoginRequest request) {
 		authService.authenticateLogin(request);
 		
-		Member member = memberRepository.findById(request.getMemberId()).get();
-		return tokenService.createToken(member);
+		Member member = memberRepository.findById(request.getMemberId())
+				.orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));;
+		
+				return tokenService.createToken(member);
 	}
 	
 	

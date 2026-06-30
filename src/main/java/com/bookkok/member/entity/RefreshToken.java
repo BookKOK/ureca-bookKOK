@@ -1,5 +1,6 @@
 package com.bookkok.member.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,8 +18,9 @@ import lombok.NoArgsConstructor;
 public class RefreshToken {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tokenId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT 생성
+	@Column(name="token_id")
+	private Long tokenId;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Member member;

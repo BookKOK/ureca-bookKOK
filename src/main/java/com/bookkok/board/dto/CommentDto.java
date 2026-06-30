@@ -1,6 +1,8 @@
 package com.bookkok.board.dto;
 
 import com.bookkok.board.entity.Comment;
+import com.bookkok.board.entity.Post;
+import com.bookkok.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,14 @@ public class CommentDto {
         private CreateRequest(Long postId, String content){
             this.postId = postId;
             this.content = content;
+        }
+
+        public Comment toEntity(Post post, User loginUser){
+            return Comment.builder()
+                    .content(this.content)
+                    .post(post)
+                    .authorMember(loginUser)
+                    .build();
         }
     }
 
@@ -56,12 +66,14 @@ public class CommentDto {
         }
 
         public static Response from(Comment comment){
+            boolean modified = comment.getModifiedDate() != null
+                    && !comment.getCreatedDate().isEqual(comment.getModifiedDate());
             return Response.builder()
                     .commentId(comment.getCommentId())
                     .authorName(comment.getAuthorMember().getMemberId())
                     .content(comment.getContent())
                     .createdDate(comment.getCreatedDate())
-                    .isModified(!comment.getCreatedDate().isEqual(comment.getModifiedDate()))
+                    .isModified(modified)
                     .build();
         }
 

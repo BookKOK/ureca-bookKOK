@@ -92,6 +92,17 @@ public class Member implements Persistable<String> {
 	    this.password = password;
 	}
 
+	@Column(name = "is_blocked", nullable = false)
+	@Builder.Default
+	private Boolean blocked = false;
+	//차단
+	public void block() {
+		this.blocked = true;
+	}
+	//차단해제
+	public void unblock() {
+		this.blocked = false;
+	}
 	
 //	@Override
 //	public Collection<? extends GrantedAuthority> getAuthorities(){

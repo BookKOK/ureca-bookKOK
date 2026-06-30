@@ -59,9 +59,9 @@ public class SecurityConfig {
 
         // 4. URL 권한 설정
         .authorizeHttpRequests(auth -> auth
-        		.anyRequest().permitAll()
-//                .requestMatchers(URL_TO_PERMIT).permitAll()
-//                .anyRequest().authenticated()
+//        		.anyRequest().permitAll()
+                .requestMatchers(URL_TO_PERMIT).permitAll()
+                .anyRequest().authenticated()
         )
         ;
 

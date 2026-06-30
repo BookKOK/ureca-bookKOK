@@ -103,6 +103,16 @@ public class Member implements Persistable<String> {
 	public void unblock() {
 		this.blocked = false;
 	}
+
+	//단체 가입/탈퇴/강퇴 시 clubId를 변경하기 위한 메서드
+	public void updateClubId(Club club) {
+		this.club = club;
+	}
+
+	//단체 생성/가입/탈퇴/강퇴 시 roleName을 변경하기 위한 메서드
+	public void updateRoleName(RoleType roleName) {
+		this.roleName = roleName;
+	}
 	
 //	@Override
 //	public Collection<? extends GrantedAuthority> getAuthorities(){

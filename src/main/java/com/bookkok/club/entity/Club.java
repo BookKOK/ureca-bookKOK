@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "clubs")
 @Getter
 @NoArgsConstructor
-public class Club {
+public class Club extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,6 @@ public class Club {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "create_date")
-    private LocalDateTime createDate;
-
     @Column(nullable = false)
     private int headcount;
 
@@ -38,8 +35,12 @@ public class Club {
         this.leaderMemberId = leaderMemberId;
         this.clubName = clubName;
         this.description = description;
-        this.createDate = createDate;
         this.headcount = headcount;
+    }
+
+    //단체장 위임 시 단체장 id 변경을 위한 메서드
+    public void updateLeader(String newLeaderId) {
+        this.leaderMemberId = newLeaderId;
     }
 
 }

@@ -82,11 +82,11 @@ public class ClubDto {
         private String name;
         private RoleType roleName;
 
-        public static MemberResponse from(Member user) {
+        public static MemberResponse from(Member member  ) {
             return MemberResponse.builder()
-                    .memberId(user.getMemberId())
-                    .name(user.getName())
-                    .roleName(user.getRoleName())
+                    .memberId(member.getMemberId())
+                    .name(member.getName())
+                    .roleName(member.getRoleName())
                     .build();
         }
     }

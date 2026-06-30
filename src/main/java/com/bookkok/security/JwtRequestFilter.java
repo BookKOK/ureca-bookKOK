@@ -43,37 +43,37 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     	// HTTP 헤더에서 JWT 가져옴
         String jwt = resolveToken(request);
-
-        log.info("DEBUG: 추출된 JWT 토큰 = {}", jwt);
-
-        if(StringUtils.hasText(jwt)) {
-            // 2. 토큰 유효성 검사 결과 확인
-            boolean isValid = jwtTokenProvider.validateToken(jwt);
-            log.info("DEBUG: 토큰 유효성 결과 = {}", isValid);
-
-            if(isValid) {
-                // 3. 인증 객체 생성 확인
-                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-                log.info("DEBUG: 생성된 Authentication = {}", authentication);
-
-                if (authentication != null) {
-                    log.info("DEBUG: Authentication의 Principal(memberId) = {}", authentication.getPrincipal());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    log.warn("DEBUG: 토큰은 유효하나 Authentication 객체 생성 실패");
-                }
-            }
-        } else {
-            log.info("DEBUG: 토큰 값이 없습니다.");
-        }
-
-//        // 토큰 값이 있고, 유효한 값인지 확인(서명/만료 체크)
-//        if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-//            // Spring Security가 이해하는 “로그인 객체”로 변환
-//        	Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-//            // 이 요청은 “로그인된 사용자”로 처리됨
-//        	SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        log.info("DEBUG: 추출된 JWT 토큰 = {}", jwt);
+//
+//        if(StringUtils.hasText(jwt)) {
+//            // 2. 토큰 유효성 검사 결과 확인
+//            boolean isValid = jwtTokenProvider.validateToken(jwt);
+//            log.info("DEBUG: 토큰 유효성 결과 = {}", isValid);
+//
+//            if(isValid) {
+//                // 3. 인증 객체 생성 확인
+//                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+//                log.info("DEBUG: 생성된 Authentication = {}", authentication);
+//
+//                if (authentication != null) {
+//                    log.info("DEBUG: Authentication의 Principal(memberId) = {}", authentication.getPrincipal());
+//                    SecurityContextHolder.getContext().setAuthentication(authentication);
+//                } else {
+//                    log.warn("DEBUG: 토큰은 유효하나 Authentication 객체 생성 실패");
+//                }
+//            }
+//        } else {
+//            log.info("DEBUG: 토큰 값이 없습니다.");
 //        }
+
+        // 토큰 값이 있고, 유효한 값인지 확인(서명/만료 체크)
+        if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            // Spring Security가 이해하는 “로그인 객체”로 변환
+        	Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+            // 이 요청은 “로그인된 사용자”로 처리됨
+        	SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
         filterChain.doFilter(request, response);
     }

@@ -90,4 +90,16 @@ public class ReservationController {
         return ResponseEntity.ok(ReservationDto.DetailResponse.from(reservation));
     }
 
+    /**
+     * 6. 예약 취소 [HTTP DELETE /api/reservations/{reservationId}]
+     * @param reservationId : 경로 변수로 유입된 대상 예약의 식별자
+     * @return http 204 (No Content)
+     * 전달받은 식별자에 대응하는 데이터가 db에 없을 경우 예외 발생
+     */
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId) {
+        reservationService.deleteReservation(reservationId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

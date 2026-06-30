@@ -33,7 +33,6 @@ public class MemberController {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@RequestBody SignupRequest request){
-		log.info("회원가입 API 진입");
 		memberService.signup(request);
 		
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,8 +47,8 @@ public class MemberController {
 	}
 	
 	@DeleteMapping("/me")
-	public ResponseEntity<Void> deleteMember(Authentication auth){
-		memberService.deleteMember(auth.getName());
+	public ResponseEntity<Void> deleteMember(Authentication authentication){
+		memberService.deleteMember(authentication.getName());
 		
 		return ResponseEntity.ok().build();
 	}

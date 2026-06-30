@@ -28,8 +28,8 @@ public class AuthController {
 	private final AuthService authService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<SocialLoginResponse> memberLogin(@RequestBody LoginRequest loginRequest){
-		TokenResponse tokenDTO = memberService.login(loginRequest);
+	public ResponseEntity<SocialLoginResponse> memberLogin(@RequestBody LoginRequest request){
+		TokenResponse tokenDTO = memberService.login(request);
 		ResponseCookie responseCookie = ResponseCookie
                 .from("refresh_token", tokenDTO.getRefreshToken())
                 .httpOnly(true)

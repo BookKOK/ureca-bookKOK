@@ -89,4 +89,19 @@ public class ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
     }
 
+    /**
+     * 6. 예약 취소
+     * @param reservationId : 취소하려는 예약의 식별자
+     * @throws IllegalArgumentException : 전달받은 식별자에 대응하는 예약 데이터가 없는 경우
+     */
+    @Transactional
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 예약이 존재하지 않습니다."));
+
+        //추후 단체장만 예약 삭제 기능 필요시 추가
+
+        reservationRepository.delete(reservation);
+    }
+
 }

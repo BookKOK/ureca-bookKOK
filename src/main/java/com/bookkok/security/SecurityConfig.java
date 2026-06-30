@@ -27,6 +27,20 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] URL_TO_PERMIT = {
+            "/",
+            "/ui/**",
+            "/home",
+            "/login",
+            "/signup",
+            "/reservations/**",
+            "/clubs/**",
+            "/board/**",
+            "/mypage",
+            "/admin",
+            "/css/**",
+            "/js/**",
+            "/index.html",
+            "/favicon.ico",
             "/api/members/signup",
             "/api/auth/login"
 //            "/auth/**",

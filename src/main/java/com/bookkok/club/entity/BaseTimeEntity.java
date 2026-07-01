@@ -8,7 +8,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @MappedSuperclass
@@ -18,6 +18,6 @@ public abstract class BaseTimeEntity {
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "create_date", updatable = false)
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
 }

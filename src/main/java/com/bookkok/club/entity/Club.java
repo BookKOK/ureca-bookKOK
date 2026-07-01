@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "clubs")
@@ -31,7 +31,7 @@ public class Club extends BaseTimeEntity {
     private int headcount;
 
     @Builder
-    protected Club(String leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {
+    protected Club(String leaderMemberId, String clubName, String description, LocalDate createDate, int headcount) {
         this.leaderMemberId = leaderMemberId;
         this.clubName = clubName;
         this.description = description;

@@ -80,7 +80,7 @@ async function signup() {
         alert('회원가입이 완료되었습니다.');
         location.href = '/login';
     } catch (error) {
-        message.hidden = false;
-        message.textContent = '회원가입에 실패했습니다. 입력값을 확인해주세요.';
+		message.hidden = false;
+	    message.textContent = error.message;
     }
 }

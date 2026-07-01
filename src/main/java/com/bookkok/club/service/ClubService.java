@@ -39,7 +39,7 @@ public class ClubService {
         Member leader = clubRepository.findMemberByMemberId(leaderId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         leader.updateClubId(savedClub);
-        leader.updateRoleName(RoleType.LEADER);
+        if (leader.getRoleName() != RoleType.ADMIN) leader.updateRoleName(RoleType.MEMBER);
 
         log.info("createClub 진입");
 
@@ -185,7 +185,7 @@ public class ClubService {
         }
 
         member.updateClubId(club);
-        member.updateRoleName(RoleType.MEMBER);
+        if (member.getRoleName() != RoleType.ADMIN) member.updateRoleName(RoleType.MEMBER);
     }
 
 //    /**

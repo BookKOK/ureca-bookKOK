@@ -89,18 +89,24 @@ public class PostService {
 
     // 게시글 좋아요
     @Transactional
-    public void toggleLike(Long postId, Member loginMember){
-        Post post = postRepository.findById(postId).orElseThrow();
+    public boolean toggleLike(Long postId, Member loginMember){
+        if(loginMember == null){
+            throw new IllegalArgumentException("로그인이 필요한 서비스입니다.");
+        }
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         Optional<PostLike> postLike = postLikeRepository.findByPostAndMember(post, loginMember);
 
         if(postLike.isPresent()){
             postLikeRepository.delete(postLike.get());
             post.decreaseLikeCount();
+            return false;
         }else{
             PostLike newLike = PostLike.builder().post(post).member(loginMember).build();
             postLikeRepository.save(newLike);
             post.increaseLikeCount();
+            return true;
         }
     }
 }

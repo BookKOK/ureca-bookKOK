@@ -66,13 +66,13 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Void> toggleLike(
+    public ResponseEntity<Boolean> toggleLike(
             @PathVariable Long postId,
             @AuthenticationPrincipal User loginUser){
 
         Member loginMember = memberRepository.findById(loginUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("회원찾을수없음"));
-        postService.toggleLike(postId, loginMember);
-        return ResponseEntity.ok().build();
+        boolean isLiked = postService.toggleLike(postId, loginMember);
+        return ResponseEntity.ok(isLiked);
     }
 }

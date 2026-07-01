@@ -39,14 +39,14 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDto.DetailResponse> getPostDetail(@PathVariable Long postId){
+    public ResponseEntity<PostDto.DetailResponse> getPostDetail(@PathVariable("postId") Long postId){
         PostDto.DetailResponse response = postService.getPostDetail(postId);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto.DetailResponse> updatePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody PostDto.UpdateRequest request,
             @AuthenticationPrincipal User loginUser){
 
@@ -57,7 +57,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") Long postId,
                                            @AuthenticationPrincipal User loginUser){
         Member loginMember = memberRepository.findById(loginUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("회원찾을수없음"));
@@ -67,7 +67,7 @@ public class PostController {
 
     @PostMapping("/{postId}/like")
     public ResponseEntity<Boolean> toggleLike(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @AuthenticationPrincipal User loginUser){
 
         Member loginMember = memberRepository.findById(loginUser.getUsername())

@@ -101,6 +101,7 @@ public class ClubService {
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
         member.updateClubId(null);
         member.updateRoleName(RoleType.USER);
+        club.subHeadcount();
     }
 
     /**
@@ -122,6 +123,7 @@ public class ClubService {
                 .orElseThrow(() -> new IllegalArgumentException("대상 회원을 찾을 수 없습니다."));
         member.updateClubId(null);
         member.updateRoleName(RoleType.USER);
+        club.subHeadcount();
     }
 
     /**
@@ -192,6 +194,7 @@ public class ClubService {
 
         member.updateClubId(club);
         if (member.getRoleName() != RoleType.ADMIN) member.updateRoleName(RoleType.MEMBER);
+        club.addHeadcount();
     }
 
     /**

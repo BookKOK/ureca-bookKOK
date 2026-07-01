@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "clubs")
@@ -31,11 +31,21 @@ public class Club extends BaseTimeEntity {
     private int headcount;
 
     @Builder
-    protected Club(String leaderMemberId, String clubName, String description, LocalDateTime createDate, int headcount) {
+    protected Club(String leaderMemberId, String clubName, String description, LocalDate createDate, int headcount) {
         this.leaderMemberId = leaderMemberId;
         this.clubName = clubName;
         this.description = description;
         this.headcount = headcount;
+    }
+
+    //단체 가입 시 회원수 증가
+    public void addHeadcount() {
+        this.headcount += 1;
+    }
+
+    //단체 탈퇴/강퇴 시 회원수 감소
+    public void subHeadcount() {
+        if (this.headcount > 0) this.headcount -= 1;
     }
 
     //단체장 위임 시 단체장 id 변경을 위한 메서드

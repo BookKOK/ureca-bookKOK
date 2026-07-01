@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewController {
 
+    // 해당 경로들로 접근을 하게 되면
     @GetMapping({
             "/",
             "/ui",
@@ -26,8 +27,10 @@ public class ViewController {
             "/mypage",
             "/admin"
     })
+
+    // 아래 html 파일로 반환
     public String index(Model model) {
         model.addAttribute("appName", "BookKOK");
-        return "index";
+        return "forward:/index.html";
     }
 }

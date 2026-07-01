@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${appName}">BookKOK</title>
     <link rel="stylesheet" href="/css/bookkok.css">
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 <div class="site-shell">
@@ -12,13 +13,13 @@
         <a class="logo" href="/home" aria-label="BookKOK 홈">
         	<img src="images/BookKok_logo.webp" alt="예약콕">
         </a>
-        <button class="login-link" id="authButton" type="button">로그인</button>
+        <div id="authArea"></div>
     </header>
     <nav class="main-nav">
         <a href="/reservations">시설 예약</a>
         <a href="/clubs">단체 관리</a>
         <a href="/board">게시판</a>
-        <a href="/mypage">마이페이지</a>
+        <a href="/mypage" onclick="return requireLogin();">마이페이지</a>
         <a class="admin-only" href="/admin">관리자</a>
     </nav>
     <main id="app" class="page-content"></main>

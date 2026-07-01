@@ -11,19 +11,24 @@ const state = {
     selectedCourt: ''
 };
 
+const params = new URLSearchParams(location.search);
+const token = params.get("accessToken");
+
+if (token) {
+    saveLogin(token);
+    history.replaceState({}, "", "/home"); // 주소창에서 토큰 제거
+}
+
+let modalRedirectUrl = null; 
 
 document.getElementById('modalClose').addEventListener('click', hideModal);
+
+// OK 버튼 클릭 이벤트 수정
 document.getElementById('modalOk').addEventListener('click', () => {
     hideModal();
-    location.href = '/login';
-});
-authButton.addEventListener('click', () => {
-    if (isLoggedIn()) {
-        clearAuth();
-        location.href = '/login';
-        return;
+    if (modalRedirectUrl) {
+        location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
     }
-    location.href = '/login';
 });
 
 function refreshAuthFromStorage() {
@@ -90,17 +95,19 @@ function requireLogin() {
     if (isLoggedIn()) {
         return true;
     }
-    showModal('로그인이 필요합니다.');
+    showModal('로그인이 필요합니다.', '/login');
     return false;
 }
 
-function showModal(message) {
+function showModal(message, redirectUrl = null) {
     modalMessage.textContent = message;
+    modalRedirectUrl = redirectUrl;
     modal.hidden = false;
 }
 
 function hideModal() {
     modal.hidden = true;
+    modalRedirectUrl = null;
 }
 
 function html(strings, ...values) {

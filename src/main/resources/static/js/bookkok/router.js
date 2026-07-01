@@ -1,8 +1,8 @@
 ﻿const routes = [
-    { pattern: /^\/$|^\/ui$|^\/login$/, render: renderLogin },
+    { pattern: /^\/ui$|^\/login$/, render: renderLogin },
     { pattern: /^\/signup$/, render: renderSignup },
-    { pattern: /^\/home$/, render: renderHome },
-    { pattern: /^\/reservations$/, render: renderReservationStep1 },
+
+    { pattern: /^\/$|^\/home$|^\/reservations$/, render: renderReservationStep1 },
     { pattern: /^\/reservations\/info$/, render: renderReservationStep2 },
     { pattern: /^\/reservations\/done$/, render: renderReservationDone },
     { pattern: /^\/clubs$/, render: renderClubs },

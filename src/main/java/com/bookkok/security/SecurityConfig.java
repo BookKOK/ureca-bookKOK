@@ -42,7 +42,9 @@ public class SecurityConfig {
             "/index.html",
             "/favicon.ico",
             "/api/members/signup",
-            "/api/auth/login"
+            "/api/auth/login",
+            "/login/kakao/auth-code",
+            "/error"
 //            "/auth/**",
 //            "/v3/api-docs/**",
 //            "/swagger-ui/**"

@@ -63,7 +63,12 @@ async function createClub() {
         });
         location.href = `/clubs/${clubId}`;
     } catch (error) {
-        alert('단체 생성에 실패했습니다.');
+        if (error.message && error.message.includes('이미')) {
+            alert('이미 단체에 가입되어 있습니다.');
+            location.href = '/clubs';
+        } else {
+            alert(error.message || '단체 생성에 실패했습니다.');
+        }
     }
 }
 
@@ -162,7 +167,12 @@ async function joinClub(clubId) {
         alert('단체에 가입되었습니다.');
         location.reload();
     } catch (error) {
-        alert(error.message || '단체 가입에 실패했습니다.')
+        if (error.message && error.message.includes('이미')) {
+            alert('이미 단체에 가입되어 있습니다.');
+            location.href = '/clubs';
+        } else {
+            alert(error.message || '단체 생성에 실패했습니다.');
+        }
     }
 }
 

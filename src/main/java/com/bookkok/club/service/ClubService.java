@@ -25,7 +25,8 @@ public class ClubService {
      * @param leaderId : 개설 요청을 보낸 단체장의 고유 계정 ID (memberId)
      * @param request : 생성할 단체의 이름과 소개글이 담긴 DTO
      * @return 데이터베이스에 정상 저장된 단체의 고유 식별자 값
-     * @throws IllegalArgumentException : 요청된 단체 이름이 이미 데이터베이스에 존재하는 경우
+     * @throws IllegalArgumentException : 요청된 단체 이름이 이미 데이터베이스에 존재하는 경우,
+     *                                    요청한 회원 아이디가 데이터베이스에 존재하지 않는 경우
      */
     @Transactional
     public Long createClub(String leaderId, ClubDto.CreateRequest request) {
@@ -33,11 +34,16 @@ public class ClubService {
             throw new IllegalArgumentException("이미 존재하는 단체 이름입니다.");
         }
 
+        Member leader = clubRepository.findMemberByMemberId(leaderId)
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (leader.getClub() != null) {
+            throw new IllegalStateException("이미 단체에 소속된 회원입니다.");
+        }
+
         Club club = request.toEntity(leaderId);
         Club savedClub = clubRepository.save(club);
 
-        Member leader = clubRepository.findMemberByMemberId(leaderId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         leader.updateClubId(savedClub);
         if (leader.getRoleName() != RoleType.ADMIN) leader.updateRoleName(RoleType.MEMBER);
 

@@ -1,4 +1,4 @@
-﻿const app = document.getElementById('app');
+const app = document.getElementById('app');
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modalMessage');
 const authButton = document.getElementById('authButton');
@@ -107,14 +107,34 @@ async function api(path, options = {}) {
     const contentType = response.headers.get('content-type') || '';
     const body = contentType.includes('application/json') ? await response.json() : await response.text();
 
-    if (response.status === 401) {
+    if (response.status === 401  || response.status === 403) {
         clearAuth();
     }
 
-    if (!response.ok) {
+	if (!response.ok) {
+	        let errorMessage = '';
+
+	        if (typeof body === 'string') {
+	            errorMessage = body;
+	        } else if (body && typeof body === 'object') {
+	            // 백엔드에서 주로 보내는 에러 필드명들 (message, error, detail 등)을 체크
+	            errorMessage = body.message || body.error || body.detail || JSON.stringify(body);
+	        }
+
+	        // 최종적으로 추출된 메시지가 없으면 status 코드와 함께 던짐
+	        throw new Error(errorMessage || `요청 실패 (${response.status})`);
+	    }
+		
+    /*if (!response.ok) {
+		const message =
+		        typeof body === 'string'
+		            ? body
+		            : body?.message || JSON.stringify(body);
+
+		    throw new Error(message || `요청 실패 (${response.status})`);
         const message = typeof body === 'string' ? body : JSON.stringify(body);
         throw new Error(message || `요청 실패 (${response.status})`);
-    }
+    }*/
     return body;
 }
 

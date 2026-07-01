@@ -67,8 +67,11 @@ public class PostService {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
         }
 
-        Category category = categoryRepository.findById(request.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        Category category = post.getCategory();
+        if(request.getCategoryId() != null){
+            category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        }
 
         post.updatePost(request.getTitle(), request.getContent(), category);
 

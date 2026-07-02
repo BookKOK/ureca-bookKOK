@@ -63,7 +63,12 @@ async function createClub() {
         });
         location.href = `/clubs/${clubId}`;
     } catch (error) {
-        if (error.message && error.message.includes('이미')) {
+        const message = error.message || '';
+
+        if (message.includes('이미 존재하는 단체 이름입니다')) {
+            alert('이미 존재하는 단체 이름입니다.');
+            location.href = '/clubs';
+        } else if (error.message.includes('이미 단체에 가입되어 있습니다')) {
             alert('이미 단체에 가입되어 있습니다.');
             location.href = '/clubs';
         } else {

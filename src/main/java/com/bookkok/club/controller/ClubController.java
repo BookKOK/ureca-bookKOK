@@ -178,8 +178,12 @@ public class ClubController {
     @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
     ResponseEntity<Map<String, String>> handleStateException(RuntimeException e) {
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("message", e.getMessage());
+        String message = e.getMessage();
 
+        if ("NAME_DUPLICATE".equals(message)) message = "이미 존재하는 단체명입니다.";
+        if ("JOINED_ALREADY".equals(message)) message = "이미 단체에 가입되어 있습니다.";
+
+        errorResponse.put("message", message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 

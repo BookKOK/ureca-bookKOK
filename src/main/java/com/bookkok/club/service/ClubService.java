@@ -30,15 +30,16 @@ public class ClubService {
      */
     @Transactional
     public Long createClub(String leaderId, ClubDto.CreateRequest request) {
+        String trimmedName = request.getClubName().trim();
         if (clubRepository.existsByClubName(request.getClubName())) {
-            throw new IllegalArgumentException("이미 존재하는 단체 이름입니다.");
+            throw new IllegalArgumentException("NAME_DUPLICATE");
         }
 
         Member leader = clubRepository.findMemberByMemberId(leaderId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         if (leader.getClub() != null) {
-            throw new IllegalStateException("이미 단체에 소속된 회원입니다.");
+            throw new IllegalStateException("JOINED_ALREADY");
         }
 
         Club club = request.toEntity(leaderId);

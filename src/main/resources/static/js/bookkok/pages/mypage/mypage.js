@@ -78,8 +78,24 @@ function renderMyPage() {
 
 					<tr>
 					    <th>이메일</th>
-					    <td>${escapeHtml(state.email || '')}</td>
-					    <td><button class="mini-btn" id="editEmail">수정</button></td>
+						<td>
+					        ${editingField === "email"
+					            ? html`<input id="emailInput" value="${escapeHtml(state.email || '')}">`
+					            : escapeHtml(state.email || '')
+					        }
+					    </td>
+
+					    <td>
+					        ${editingField === "email"
+					            ? html`
+					                <button class="mini-btn" id="saveEmail">저장</button>
+					                <button class="mini-btn" id="cancelEdit">취소</button>
+					            `
+					            : html`
+					                <button class="mini-btn" id="editEmail">수정</button>
+					            `
+					        }
+					    </td>
 					</tr>
 
                     <tr>
@@ -157,12 +173,20 @@ function renderMyPage() {
 	    };
 	}
 	const editPhoneBtn = document.getElementById('editPhone');
-		if (editPhoneBtn) {
-		    editPhoneBtn.onclick = () => {
-		        editingField = "phone";
-		        renderMyPage();
-		    };
-		}
+	if (editPhoneBtn) {
+	    editPhoneBtn.onclick = () => {
+	        editingField = "phone";
+	        renderMyPage();
+	    };
+	}
+		
+	const editEmailBtn = document.getElementById('editEmail');
+	if (editEmailBtn) {
+	    editEmailBtn.onclick = () => {
+	        editingField = "email";
+	        renderMyPage();
+	    };
+	}
 	
 	document.addEventListener("click", async (e) => {
 	    if (!e.target.id.startsWith("save")) return;
@@ -201,28 +225,12 @@ function renderMyPage() {
 	    }
 	});
 	
-    /*document.getElementById('openPasswordChange').onclick = () => {
-        document.getElementById('passwordBox').classList.toggle('hidden');
-    };
-
-    // 비밀번호 변경
-    document.getElementById('passwordSubmit')
-        .addEventListener('click', resetPassword);
-	
-	["currentPassword", "newPassword", "newPasswordCheck"].forEach(id => {
-	    document.getElementById(id).addEventListener("keydown", e => {
-	        if (e.key === "Enter") {
-	            e.preventDefault();   // 엔터 기본 동작 방지
-	            resetPassword();
-	        }
-	    });
-	});*/
 	document.getElementById('tabProfile').onclick = showProfileTab;
 	document.getElementById('tabLogin').onclick = showLoginTab;
 	
 	// document.getElementById('editName').onclick = showNotReady;
 	// document.getElementById('editPhone').onclick = showNotReady;
-	document.getElementById('editEmail').onclick = showNotReady;
+	// document.getElementById('editEmail').onclick = showNotReady;
 	
 }
 
@@ -246,25 +254,6 @@ function showLoginTab() {
     document.getElementById('tabLogin').classList.add('active');
 }
 
-/*function formatPhoneNumber(phone) {
-    if (!phone) return '';
-
-    // +82 -> 0으로 변경
-    phone = phone.replace('+82', '0');
-
-    // 숫자만 추출
-    phone = phone.replace(/\D/g, '');
-
-    if (phone.length === 11) {
-        return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-    }
-
-    if (phone.length === 10) {
-        return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-    }
-
-    return phone;
-}*/
 
 function formatDate(date) {
     if (!date) return '';

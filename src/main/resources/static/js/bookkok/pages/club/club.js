@@ -143,7 +143,7 @@ async function renderClubDetail(match) {
                     <div class="detail-row"><div class="detail-label">회원수</div><div class="detail-value">${club.headcount ?? 0}명</div></div>
                     <div class="detail-row"><div class="detail-label">생성일</div><div class="detail-value">${escapeHtml(club.createDate || '')}</div></div>
                     <div class="detail-row"><div class="detail-label">설명</div><div class="detail-value">${escapeHtml(club.description || '')}</div></div>
-                    <div class="detail-row"><div class="detail-label">회원 목록</div><div class="detail-value">${membersHtml}</div></div>
+                    <div class="detail-row"><div class="detail-label">회원</div><div class="detail-value">${memberListHtml}</div></div>
                 </div>
                 <div class="actions">
                     ${actionButton}

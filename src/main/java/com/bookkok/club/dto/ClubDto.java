@@ -6,7 +6,7 @@ import com.bookkok.member.entity.Member;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ClubDto {
 
@@ -59,7 +59,7 @@ public class ClubDto {
         private String leaderMemberId;
         private String clubName;
         private String description;
-        private LocalDate createDate;
+        private LocalDateTime createDate;
         private int headcount;
 
         public static DetailResponse from(Club club) {

@@ -101,11 +101,6 @@ button {
     margin: 0 auto;
 }
 
-.page-title {
-    margin: 0 0 24px;
-    font-size: 24px;
-    text-align: center;
-}
 
 .sub-title {
     margin: 0 0 16px;
@@ -129,15 +124,10 @@ button {
 textarea,
 select {
     width: 100%;
-    min-height: 34px;
+    height: 42px;
     border: 1px solid #bdbdbd;
     border-radius: 3px;
     padding: 7px 10px;
-}
-
-textarea {
-    min-height: 120px;
-    resize: vertical;
 }
 
 .actions {
@@ -170,14 +160,6 @@ textarea {
 
 .small {
     padding: 7px 14px;
-    font-size: 13px;
-}
-
-.link-row {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin: 18px 0;
     font-size: 13px;
 }
 
@@ -517,4 +499,10 @@ textarea {
     .form-row {
         grid-template-columns: 1fr;
     }
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    display: block;
 }

@@ -76,39 +76,50 @@ async function createClub() {
 async function renderClubDetail(match) {
     const clubId = match[1];
     setApp('<section class="wide-panel"><p class="empty">불러오는 중...</p></section>');
+
     try {
         const club = await api(`/api/clubs/${clubId}`);
 
         //멤버 목록 데이터 받아오기
-        let isJoined = false;
-        let memberListHtml = '<p class="empty">가입된 멤버가 없습니다.</p>';
+        let membersList = [];
+        let membersHtml = '<p class="empty">가입된 멤버가 없습니다.</p>';
+        let isCurrentUserLeader = false;
 
         try {
             //로그인 여부와 상관없이 무조건 해당 단체의 멤버 목록 api를 호출
-            const members = await api(`/api/clubs/${clubId}/members`);
+            membersList = await api(`/api/clubs/${clubId}/members`);
 
-            //로그인한 사용자라면, 해당 사용자가 이 단체에 가입되어 있는지 확인
-            if (state.memberId && members) {
-                isJoined = members.some(m => m.memberId === state.memberId);
-            }
+            //단체장 여부 확인
+            isCurrentUserLeader = state.memberId && state.memberId === club.leaderMemberId;
+            if (membersList && membersList.length > 0) {
+                membersHtml = membersList.map(member => {
+                    const isThisMemberLeader = member.memberId === club.leaderMemberId;
 
-            //백엔드에서 받아온 멤버 데이터를 그대로 화면에 출력
-            if (members && members.length > 0) {
-                memberListHtml = html`
-                    <div class="club-member-tags">
-                        ${members.map(m => html`<span class="member-tag">${escapeHtml(m.name || m.memberName)}</span>`).join(', ')}
-                    </div>`;
+                    //강퇴 버틈
+                    const kickButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
+                        ? `<button class="danger small kick-button" data-member-id="${member.memberId}" type="button">강퇴</button>`
+                        : '';
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-botton: 1px solid #eee;">
+                            <span>
+                                ${escapeHtml(member.name)}
+                            </span>
+                            ${kickButtonHtml}
+                        </div>
+                    `;
+                }).join('')
             }
         } catch (error) {
-            console.error('멤버 목록을 불러오지 못했습니다.', error);
-            memberListHtml = '<p class="empty">멤버 목록을 불러오지 못했습니다.</p>'
+            console.warn('멤버 목록을 불러오지 못했습니다.', error);
+            membersHtml = '<p class="empty" style="padding: 10px 0;">멤버 목록을 불러오지 못했습니다.</p>'
         }
 
         //권한 및 가입 여부에 따른 버튼 분기 처리
         let actionButton = '';
+        const isJoined = membersList.some(m => m.memberId === state.memberId);
 
         //1. 단체장인 경우 (단체 삭제 버튼)
-        if (state.memberId === club.leaderMemberId) {
+        if (isCurrentUserLeader) {
             actionButton = html`<button class="danger" id="clubDelete" type="button">단체 삭제</button>`;
         }
 
@@ -122,15 +133,17 @@ async function renderClubDetail(match) {
             actionButton = html`<button class="primary" id="clubJoin" type="button">단체 가입</button>`;
         }
 
-
         setApp(html`
             <section class="wide-panel">
+                
+                <h1 class="page-title">단체 상세 조회</h1>
+                
                 <div class="detail-table">
                     <div class="detail-row"><div class="detail-label">단체명</div><div class="detail-value">${escapeHtml(club.clubName)}</div></div>
-                    <div class="detail-row"><div class="detail-label">회원수</div><div class="detail-value">${club.headcount ?? 0}</div></div>
+                    <div class="detail-row"><div class="detail-label">회원수</div><div class="detail-value">${club.headcount ?? 0}명</div></div>
                     <div class="detail-row"><div class="detail-label">생성일</div><div class="detail-value">${escapeHtml(club.createDate || '')}</div></div>
                     <div class="detail-row"><div class="detail-label">설명</div><div class="detail-value">${escapeHtml(club.description || '')}</div></div>
-                    <div class="detail-row"><div class="detail-label">회원</div><div class="detail-value">${memberListHtml}</div></div>
+                    <div class="detail-row"><div class="detail-label">회원 목록</div><div class="detail-value">${membersHtml}</div></div>
                 </div>
                 <div class="actions">
                     ${actionButton}
@@ -148,6 +161,14 @@ async function renderClubDetail(match) {
         }
         if (document.getElementById('clubDelete')) {
             document.getElementById('clubDelete').addEventListener('click', () => deleteClub(clubId));
+        }
+        if (isCurrentUserLeader) {
+            document.querySelectorAll('.kick-button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetMemberId = e.target.getAttribute('data-member-id');
+                    handleKickMember(clubId, targetMemberId);
+                });
+            });
         }
 
     } catch (error) {
@@ -203,5 +224,22 @@ async function deleteClub(clubId) {
         location.href = '/clubs';
     } catch (error) {
         alert(error.message || '단체 삭제에 실패했습니다.');
+    }
+}
+
+//멤버 강퇴 기능 연결
+async function handleKickMember(clubId, targetMemberId) {
+    if (!confirm('정말 이 회원을 강퇴하시겠습니까?')) return;
+
+    try {
+        await api(`/api/clubs/${clubId}/members/${targetMemberId}`, {
+            method: 'DELETE'
+        });
+
+        alert('회원을 성공적으로 강퇴했습니다.');
+        await renderClubDetail([null, clubId]);
+    } catch (error) {
+        console.error(error);
+        alert('회원 강퇴에 실패했습니다.')
     }
 }

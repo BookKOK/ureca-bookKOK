@@ -48,7 +48,9 @@ document.getElementById('modalClose').addEventListener('click', hideModal);
 // -> 확인 클릭 -> /login 이동
 document.getElementById('modalOk').addEventListener('click', () => {
     hideModal();
-    location.href = '/login';
+	if (modalRedirectUrl) {
+	        location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
+	}
 });
 
 // 상단 로그인/로그아웃 버튼 처리 담당.
@@ -143,19 +145,21 @@ function requireLogin() {
     if (isLoggedIn()) {
         return true;
     }
-    showModal('로그인이 필요합니다.');
+    showModal('로그인이 필요합니다.', '/login');
     return false;
 }
 
 // 공통 모달 메시지 설정 후 화면에 표시.
-function showModal(message) {
+function showModal(message, redirectUrl = null) {
     modalMessage.textContent = message;
+	modalRedirectUrl = redirectUrl;
     modal.hidden = false;
 }
 
 // 공통 모달 숨김.
 function hideModal() {
     modal.hidden = true;
+	modalRedirectUrl = null;
 }
 
 // 화면별 JS에서 템플릿 문자열을 읽기 좋게 쓰기 위한 헬퍼.

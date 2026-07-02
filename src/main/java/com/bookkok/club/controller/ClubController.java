@@ -143,20 +143,20 @@ public class ClubController {
         return ResponseEntity.ok().build();
     }
 
-//    /**
-//     * 10. 단체 이름 키워드 검색 [HTTP GET /api/clubs/search?keyword={keyword}]
-//     * @param keyword 검색할 단체명 키워드 문자열
-//     * @return HTTP 200 (OK) 및 검색 조건에 부합하는 단체 요약 정보 DTO 리스트
-//     */
-//    @GetMapping("/search")
-//    public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
-//        List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
-//                .map(ClubDto.ListResponse::from)
-//                .toList();
-//
-//        return ResponseEntity.ok(responses);
-//    }
-//
+    /**
+     * 10. 단체 이름 키워드 검색 [HTTP GET /api/clubs/search?keyword={keyword}]
+     * @param keyword 검색할 단체명 키워드 문자열
+     * @return HTTP 200 (OK) 및 검색 조건에 부합하는 단체 요약 정보 DTO 리스트
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
+        List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
+                .map(ClubDto.ListResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
 //    /**
 //     * 11. 내 단체 조회 [HTTP GET /api/clubs/my?leaderId={leaderId}]
 //     * @param leaderId 단체장의 고유 계정 아이디 (memberId)

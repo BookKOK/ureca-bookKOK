@@ -188,15 +188,15 @@ public class ClubService {
         member.updateRoleName(RoleType.MEMBER);
     }
 
-//    /**
-//     * 10. 단체 이름 키워드로 검색
-//     * @param keyword : 검색할 키워드 문자열
-//     * @return 키워드가 포함된 단체 엔티티 리스트 (검색 결과가 없을 경우 null이 아닌 텅 빈 List 반환)
-//     */
-//    public List<Club> searchClubsByName(String keyword) {
-//        return clubRepository.findByClubNameContaining(keyword);
-//    }
-//
+    /**
+     * 10. 단체 이름 키워드로 검색
+     * @param keyword : 검색할 키워드 문자열
+     * @return 키워드가 포함된 단체 엔티티 리스트 (검색 결과가 없을 경우 null이 아닌 텅 빈 List 반환)
+     */
+    public List<Club> searchClubsByName(String keyword) {
+        return clubRepository.findByClubNameContaining(keyword);
+    }
+
 //    /**
 //     * 11. 단체장 이름으로 검색
 //     * @param leaderMemberId : 단체장의 고유 계정 아이디 (memberId)

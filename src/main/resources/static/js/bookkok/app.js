@@ -66,7 +66,37 @@ function refreshAuthFromStorage() {
 // 관리자면 body에 is-admin 클래스를 붙여 관리자 메뉴 노출.
 function applyAuthUi() {
     document.body.classList.toggle('is-admin', isAdmin());
-    authButton.textContent = isLoggedIn() ? `${state.memberId || '회원'} 로그아웃` : '로그인';
+	if (isLoggedIn()) {
+	        authArea.innerHTML = `
+	            <a href="/mypage" class="member-link">
+	                ${state.memberId || '회원'}님
+	            </a>
+
+	            <button id="logoutButton" class="login-link">
+	                로그아웃
+	            </button>
+	        `;
+
+	        document
+	            .getElementById('logoutButton')
+	            .addEventListener('click', () => {
+	                clearAuth();
+	                location.href = "/home";
+	            });
+
+	    } else {
+	        authArea.innerHTML = `
+	            <button id="loginButton" class="login-link">
+	                로그인
+	            </button>
+	        `;
+
+	        document
+	            .getElementById('loginButton')
+	            .addEventListener('click', () => {
+	                location.href = "/login";
+	            });
+	    }
 }
 
 // 현재 프론트가 로그인 상태라고 판단하는 기준.

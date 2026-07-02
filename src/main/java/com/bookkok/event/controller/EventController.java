@@ -38,4 +38,18 @@ public class EventController {
         List<EventDto.ListResponse> response = eventService.getAllEvents();
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping
+    public ResponseEntity<Void> updateEvent(
+            @RequestParam("reservationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate originalDate,
+            @RequestParam("reservationCourt") String originalCourt,
+            @RequestBody EventDto.UpdateRequest request,
+            @AuthenticationPrincipal User loginUser){
+        Member loginMember = memberRepository.findById(loginUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("회원찾을수없음"));
+
+        eventService.updateEvent(originalDate, originalCourt, request, loginMember);
+
+        return ResponseEntity.ok().build();
+    }
 }

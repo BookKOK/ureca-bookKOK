@@ -55,4 +55,19 @@ public class EventDto {
         }
     }
 
+    @Getter
+    @NoArgsConstructor
+    public static class UpdateRequest{
+        private LocalDate reservationDate;
+        private String reservationCourt;
+        private List<LocalTime> newReservationTimes;
+
+        @Builder
+        private UpdateRequest(LocalDate reservationDate, String reservationCourt, List<LocalTime> newReservationTimes){
+            this.reservationDate = reservationDate;
+            this.reservationCourt = reservationCourt;
+            this.newReservationTimes = newReservationTimes;
+        }
+    }
+
 }

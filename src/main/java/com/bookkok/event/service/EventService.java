@@ -54,4 +54,31 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteEvent(LocalDate reservationDate, String reservationCourt){
+        reservationRepository.deleteByClubIdDateCourt(1L, reservationDate, reservationCourt);
+    }
+
+    @Transactional
+    public void updateEvent(LocalDate originalDate, String originalCourt, EventDto.UpdateRequest request, Member loginMember){
+
+        if(loginMember == null || loginMember.getRoleName() != RoleType.ADMIN){
+            throw new IllegalArgumentException("행사 수정은 관리자만 가능합니다.");
+        }
+
+        reservationRepository.deleteByClubIdDateCourt(1L, originalDate, originalCourt);
+
+        Club adminClub = clubRepository.findById(1L).orElseThrow();
+
+        for(LocalTime newTime : request.getNewReservationTimes()){
+            Reservation reservation = Reservation.builder()
+                    .club(adminClub)
+                    .reservationDate(request.getReservationDate())
+                    .reservationCourt(request.getReservationCourt())
+                    .reservationTime(newTime)
+                    .headcount(0)
+                    .build();
+            reservationRepository.save(reservation);
+        }
+    }
 }

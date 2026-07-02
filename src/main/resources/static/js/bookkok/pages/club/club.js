@@ -95,12 +95,12 @@ async function renderClubDetail(match) {
                 membersHtml = membersList.map(member => {
                     const isThisMemberLeader = member.memberId === club.leaderMemberId;
 
-                    //강퇴 버튼
+                    //강퇴 버틈
                     const kickButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
                         ? `<button class="danger small kick-button" data-member-id="${member.memberId}" type="button">강퇴</button>`
                         : '';
                     return `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-botton: 1px solid #eee;">
                             <span>
                                 ${escapeHtml(member.name)}
                             </span>
@@ -135,9 +135,9 @@ async function renderClubDetail(match) {
 
         setApp(html`
             <section class="wide-panel">
-                
+
                 <h1 class="page-title">단체 상세 조회</h1>
-                
+
                 <div class="detail-table">
                     <div class="detail-row"><div class="detail-label">단체명</div><div class="detail-value">${escapeHtml(club.clubName)}</div></div>
                     <div class="detail-row"><div class="detail-label">회원수</div><div class="detail-value">${club.headcount ?? 0}명</div></div>

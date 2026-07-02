@@ -10,7 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clubs")
@@ -167,5 +169,18 @@ public class ClubController {
 //        Club myClub = clubService.findClubByLeader(leaderId);
 //        return ResponseEntity.ok(ClubDto.DetailResponse.from(myClub));
 //    }
+
+    /**
+     * 추가) 서비스 레이어에서 던진 예외를 프론트가 안전하게 읽을 수 있도록 400 에러로 변환
+     * @param e 발생한 예외
+     * @return
+     */
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
+    ResponseEntity<Map<String, String>> handleStateException(RuntimeException e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
 }

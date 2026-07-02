@@ -1,0 +1,80 @@
+.mypage-container {
+    max-width: 900px;
+    margin: 50px auto;
+}
+
+.card {
+    margin-top: 20px;
+}
+.mypage-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    flex: 1;
+    height: 48px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.tab.active {
+    color: #049b7d;
+    border-bottom: 3px solid #049b7d;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table tr {
+    border-bottom: 1px solid #ececec;
+}
+
+.info-table tr:last-child {
+    border-bottom: none;
+}
+
+.info-table th {
+    width: 100px;
+    padding: 18px;
+    background: #fafafa;
+    font-weight: 600;
+    color: #555;
+}
+
+.info-table td {
+    padding: 18px;
+}
+
+.mini-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.password-box {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.password-box input {
+    height: 44px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0 12px;
+}
+
+.hidden {
+    display: none;
+}

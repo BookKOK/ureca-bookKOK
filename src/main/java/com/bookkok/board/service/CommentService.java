@@ -23,8 +23,8 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public Long createComment(CommentDto.CreateRequest request, Member loginMember){
-        Post post = postRepository.findById(request.getPostId())
+    public Long createComment(Long postId, CommentDto.CreateRequest request, Member loginMember){
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
 
         Comment comment = request.toEntity(post, loginMember);

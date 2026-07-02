@@ -10,7 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clubs")
@@ -143,20 +145,20 @@ public class ClubController {
         return ResponseEntity.ok().build();
     }
 
-//    /**
-//     * 10. 단체 이름 키워드 검색 [HTTP GET /api/clubs/search?keyword={keyword}]
-//     * @param keyword 검색할 단체명 키워드 문자열
-//     * @return HTTP 200 (OK) 및 검색 조건에 부합하는 단체 요약 정보 DTO 리스트
-//     */
-//    @GetMapping("/search")
-//    public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
-//        List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
-//                .map(ClubDto.ListResponse::from)
-//                .toList();
-//
-//        return ResponseEntity.ok(responses);
-//    }
-//
+    /**
+     * 10. 단체 이름 키워드 검색 [HTTP GET /api/clubs/search?keyword={keyword}]
+     * @param keyword 검색할 단체명 키워드 문자열
+     * @return HTTP 200 (OK) 및 검색 조건에 부합하는 단체 요약 정보 DTO 리스트
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<ClubDto.ListResponse>> searchClubs(@RequestParam String keyword) {
+        List<ClubDto.ListResponse> responses = clubService.searchClubsByName(keyword).stream()
+                .map(ClubDto.ListResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
 //    /**
 //     * 11. 내 단체 조회 [HTTP GET /api/clubs/my?leaderId={leaderId}]
 //     * @param leaderId 단체장의 고유 계정 아이디 (memberId)
@@ -167,5 +169,22 @@ public class ClubController {
 //        Club myClub = clubService.findClubByLeader(leaderId);
 //        return ResponseEntity.ok(ClubDto.DetailResponse.from(myClub));
 //    }
+
+    /**
+     * 추가) 서비스 레이어에서 던진 예외를 프론트가 안전하게 읽을 수 있도록 400 에러로 변환
+     * @param e 발생한 예외
+     * @return
+     */
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
+    ResponseEntity<Map<String, String>> handleStateException(RuntimeException e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        String message = e.getMessage();
+
+        if ("NAME_DUPLICATE".equals(message)) message = "이미 존재하는 단체명입니다.";
+        if ("JOINED_ALREADY".equals(message)) message = "이미 단체에 가입되어 있습니다.";
+
+        errorResponse.put("message", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 
 }

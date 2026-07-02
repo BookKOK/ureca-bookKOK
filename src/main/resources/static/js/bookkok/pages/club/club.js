@@ -63,7 +63,12 @@ async function createClub() {
         });
         location.href = `/clubs/${clubId}`;
     } catch (error) {
-        if (error.message && error.message.includes('이미')) {
+        const message = error.message || '';
+
+        if (message.includes('이미 존재하는 단체 이름입니다')) {
+            alert('이미 존재하는 단체 이름입니다.');
+            location.href = '/clubs';
+        } else if (error.message.includes('이미 단체에 가입되어 있습니다')) {
             alert('이미 단체에 가입되어 있습니다.');
             location.href = '/clubs';
         } else {
@@ -95,16 +100,25 @@ async function renderClubDetail(match) {
                 membersHtml = membersList.map(member => {
                     const isThisMemberLeader = member.memberId === club.leaderMemberId;
 
-                    //강퇴 버틈
+                    //위임 버튼 추가
+                    const delegateButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
+                        ? `<button class="secondary small delegate-button" data-member-id="${member.memberId}" type="button">단체장 위임</button>`
+                        : '';
+
+                    //강퇴 버튼 추가
                     const kickButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
                         ? `<button class="danger small kick-button" data-member-id="${member.memberId}" type="button">강퇴</button>`
                         : '';
+
                     return `
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-botton: 1px solid #eee;">
                             <span>
                                 ${escapeHtml(member.name)}
                             </span>
-                            ${kickButtonHtml}
+                            <div style="display: flex; gap: 4px;">
+                                ${delegateButtonHtml}
+                                ${kickButtonHtml}
+                            </div>
                         </div>
                     `;
                 }).join('')
@@ -135,15 +149,15 @@ async function renderClubDetail(match) {
 
         setApp(html`
             <section class="wide-panel">
-                
+
                 <h1 class="page-title">단체 상세 조회</h1>
-                
+
                 <div class="detail-table">
                     <div class="detail-row"><div class="detail-label">단체명</div><div class="detail-value">${escapeHtml(club.clubName)}</div></div>
                     <div class="detail-row"><div class="detail-label">회원수</div><div class="detail-value">${club.headcount ?? 0}명</div></div>
                     <div class="detail-row"><div class="detail-label">생성일</div><div class="detail-value">${escapeHtml(club.createDate || '')}</div></div>
                     <div class="detail-row"><div class="detail-label">설명</div><div class="detail-value">${escapeHtml(club.description || '')}</div></div>
-                    <div class="detail-row"><div class="detail-label">회원</div><div class="detail-value">${memberListHtml}</div></div>
+                    <div class="detail-row"><div class="detail-label">회원</div><div class="detail-value">${membersHtml}</div></div>
                 </div>
                 <div class="actions">
                     ${actionButton}
@@ -162,6 +176,12 @@ async function renderClubDetail(match) {
         if (document.getElementById('clubDelete')) {
             document.getElementById('clubDelete').addEventListener('click', () => deleteClub(clubId));
         }
+        document.querySelectorAll('.delegate-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetMemberId = e.target.getAttribute('data-member-id');
+                handleDelegateLeader(clubId, targetMemberId);
+            });
+        });
         if (isCurrentUserLeader) {
             document.querySelectorAll('.kick-button').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -224,6 +244,24 @@ async function deleteClub(clubId) {
         location.href = '/clubs';
     } catch (error) {
         alert(error.message || '단체 삭제에 실패했습니다.');
+    }
+}
+
+//단체장 위임 기능 연결
+async function handleDelegateLeader(clubId, targetMemberId) {
+    if (!confirm('정말 이 회원에게 단체장을 위임하시겠습니까?')) return;
+
+    try {
+        await api(`/api/clubs/${clubId}/leader`, {
+            method: 'PATCH',
+            body: JSON.stringify({newLeaderId: targetMemberId})
+        });
+
+        alert('단체장이 성공적으로 위임되었습니다.');
+        await renderClubDetail([null, clubId]);
+    } catch (error) {
+        console.error(error)
+        alert(error.message || '단체장 위임에 실패했습니다.');
     }
 }
 

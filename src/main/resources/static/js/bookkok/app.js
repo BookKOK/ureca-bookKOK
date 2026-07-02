@@ -30,6 +30,16 @@ const state = {
     selectedCourt: ''
 };
 
+const params = new URLSearchParams(location.search);
+const token = params.get("accessToken");
+
+if (token) {
+    saveLogin(token);
+    history.replaceState({}, "", "/home"); // 주소창에서 토큰 제거
+}
+
+let modalRedirectUrl = null; 
+
 // index.html의 모달 X 버튼 클릭 시 모달만 닫는 담당.
 document.getElementById('modalClose').addEventListener('click', hideModal);
 

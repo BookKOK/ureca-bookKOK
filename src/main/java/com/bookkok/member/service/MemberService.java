@@ -136,6 +136,7 @@ public class MemberService { // implements UserDetailsService
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
 	}
 	
+	@Transactional
 	public UpdateProfileResponse updateProfile(String memberId, UpdateProfileRequest request) {
 
         Member member = memberRepository.findById(memberId)

@@ -95,16 +95,25 @@ async function renderClubDetail(match) {
                 membersHtml = membersList.map(member => {
                     const isThisMemberLeader = member.memberId === club.leaderMemberId;
 
-                    //강퇴 버틈
+                    //위임 버튼 추가
+                    const delegateButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
+                        ? `<button class="secondary small delegate-button" data-member-id="${member.memberId}" type="button">단체장 위임</button>`
+                        : '';
+
+                    //강퇴 버튼 추가
                     const kickButtonHtml = (isCurrentUserLeader && !isThisMemberLeader)
                         ? `<button class="danger small kick-button" data-member-id="${member.memberId}" type="button">강퇴</button>`
                         : '';
+
                     return `
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-botton: 1px solid #eee;">
                             <span>
                                 ${escapeHtml(member.name)}
                             </span>
-                            ${kickButtonHtml}
+                            <div style="display: flex; gap: 4px;">
+                                ${delegateButtonHtml}
+                                ${kickButtonHtml}
+                            </div>
                         </div>
                     `;
                 }).join('')
@@ -162,6 +171,12 @@ async function renderClubDetail(match) {
         if (document.getElementById('clubDelete')) {
             document.getElementById('clubDelete').addEventListener('click', () => deleteClub(clubId));
         }
+        document.querySelectorAll('.delegate-button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetMemberId = e.target.getAttribute('data-member-id');
+                handleDelegateLeader(clubId, targetMemberId);
+            });
+        });
         if (isCurrentUserLeader) {
             document.querySelectorAll('.kick-button').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -224,6 +239,24 @@ async function deleteClub(clubId) {
         location.href = '/clubs';
     } catch (error) {
         alert(error.message || '단체 삭제에 실패했습니다.');
+    }
+}
+
+//단체장 위임 기능 연결
+async function handleDelegateLeader(clubId, targetMemberId) {
+    if (!confirm('정말 이 회원에게 단체장을 위임하시겠습니까?')) return;
+
+    try {
+        await api(`/api/clubs/${clubId}/leader`, {
+            method: 'PATCH',
+            body: JSON.stringify({newLeaderId: targetMemberId})
+        });
+
+        alert('단체장이 성공적으로 위임되었습니다.');
+        await renderClubDetail([null, clubId]);
+    } catch (error) {
+        console.error(error)
+        alert(error.message || '단체장 위임에 실패했습니다.');
     }
 }
 

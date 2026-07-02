@@ -1,3 +1,6 @@
+let editingField = null;
+	// "name" | "phone" | "email" | null
+
 function renderMyPage() {
     if (!requireLogin()) return;
 
@@ -5,6 +8,8 @@ function renderMyPage() {
         loadData();   // 최초 1번만
         return;
     }
+	
+	
 	
     setApp(html`
         <section class="mypage-container">
@@ -23,9 +28,26 @@ function renderMyPage() {
 
                 <table class="info-table">
 					<tr>
-					    <th>이름</th>
-					    <td>${escapeHtml(state.name || '')}</td>
-					    <td><button class="mini-btn" id="editName">수정</button></td>
+					<th>이름</th>
+
+					    <td>
+					        ${editingField === "name"
+					            ? html`<input id="nameInput" value="${escapeHtml(state.name || '')}">`
+					            : escapeHtml(state.name || '')
+					        }
+					    </td>
+
+					    <td>
+					        ${editingField === "name"
+					            ? html`
+					                <button class="mini-btn" id="saveName">저장</button>
+					                <button class="mini-btn" id="cancelEdit">취소</button>
+					            `
+					            : html`
+					                <button class="mini-btn" id="editName">수정</button>
+					            `
+					        }
+					    </td>
 					</tr>
 
 					<tr>
@@ -107,6 +129,48 @@ function renderMyPage() {
 	    location.href = "/mypage/password";
 	};
 	
+	const editNameBtn = document.getElementById('editName');
+	if (editNameBtn) {
+	    editNameBtn.onclick = () => {
+	        editingField = "name";
+	        renderMyPage();
+	    };
+	}
+	
+	document.addEventListener("click", async (e) => {
+	    if (!e.target.id.startsWith("save")) return;
+
+	    const type = e.target.id.replace("save", "");
+
+	    if (type === "Name") {
+	        state.name = document.getElementById("nameInput").value;
+	    }
+
+	    if (type === "Email") {
+	        state.email = document.getElementById("emailInput").value;
+	    }
+
+	    if (type === "Phone") {
+	        state.phoneNumber = document.getElementById("phoneInput").value;
+	    }
+
+	    editingField = null;
+
+	    await api("/api/members/update", {
+	        method: "PUT",
+	        body: JSON.stringify(state)
+	    });
+
+	    renderMyPage();
+	});
+	
+	document.addEventListener("click", (e) => {
+	    if (e.target.id === "cancelEdit") {
+	        editingField = null;
+	        renderMyPage();
+	    }
+	});
+	
     /*document.getElementById('openPasswordChange').onclick = () => {
         document.getElementById('passwordBox').classList.toggle('hidden');
     };
@@ -126,7 +190,7 @@ function renderMyPage() {
 	document.getElementById('tabProfile').onclick = showProfileTab;
 	document.getElementById('tabLogin').onclick = showLoginTab;
 	
-	document.getElementById('editName').onclick = showNotReady;
+	// document.getElementById('editName').onclick = showNotReady;
 	document.getElementById('editPhone').onclick = showNotReady;
 	document.getElementById('editEmail').onclick = showNotReady;
 	

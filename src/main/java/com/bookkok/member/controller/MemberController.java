@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bookkok.member.dto.MemberDto.ProfileResponse;
 import com.bookkok.member.dto.MemberDto.SignupRequest;
 import com.bookkok.member.dto.MemberDto.UpdatePasswordRequest;
+import com.bookkok.member.dto.MemberDto.UpdateProfileRequest;
+import com.bookkok.member.dto.MemberDto.UpdateProfileResponse;
 import com.bookkok.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +43,19 @@ public class MemberController {
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	@PutMapping("/update")
+    public ResponseEntity<UpdateProfileResponse> updateMember(
+    		Authentication authentication,
+            @RequestBody UpdateProfileRequest request
+    ) {
+		String memberId = authentication.getName();
 
+        UpdateProfileResponse response = memberService.updateProfile(memberId, request);
+
+        return ResponseEntity.ok(response);
+    }
+	
 	@GetMapping("/me")
     public ResponseEntity<ProfileResponse> getMyProfile(Authentication authentication) {
 		

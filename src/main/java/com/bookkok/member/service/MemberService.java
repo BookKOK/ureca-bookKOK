@@ -130,6 +130,14 @@ public class MemberService { // implements UserDetailsService
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
 	}
 	
+	public ProfileResponse getProfile(String memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
+
+        return ProfileResponse.from(member);
+    }
+	
 	@Transactional
 	/**
 	 * 회원 soft delete

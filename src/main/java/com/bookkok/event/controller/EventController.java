@@ -5,6 +5,7 @@ import com.bookkok.event.service.EventService;
 import com.bookkok.member.entity.Member;
 import com.bookkok.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -105,38 +105,82 @@ function goReservationInfo() {
     location.href = '/reservations/info';
 }
 
-function renderReservationStep2() {
+async function renderReservationStep2() {
     if (!requireLogin()) return;
     const draft = JSON.parse(localStorage.getItem('bookkokReservationDraft') || '{}');
-    setApp(html`
+
+    //현재 로그인한 회원의 정보를 가져옴
+    let userInfo = {
+        phoneNumber: '',
+        clubId: '',
+        clubName: ''
+    };
+    try {
+        const response = await api('/api/reservations/info');
+        if (response) {
+            userInfo = response;
+        }
+    } catch (error) {
+        console.error("사용자 정보를 불러오지 못했습니다.");
+    }
+
+    setApp(html `
         ${renderSteps(2)}
         <section class="wide-panel">
             <h1 class="sub-title">예약 정보 입력</h1>
             <div class="notice">선택 정보: ${escapeHtml(draft.reservationDate)} / ${escapeHtml(draft.reservationTime)} / ${escapeHtml(draft.reservationCourt)}</div>
-            <div class="form-row"><label for="reservationClubId">단체 ID</label><input class="field" id="reservationClubId" type="number" placeholder="예약할 단체 ID"></div>
-            <div class="form-row"><label for="headcount">인원</label><input class="field" id="headcount" type="number" value="1"></div>
-            <div class="form-row"><label for="applicantName">신청자명</label><input class="field" id="applicantName" value="${escapeHtml(state.memberId)}"></div>
-            <div class="form-row"><label for="applicantPhone">휴대폰</label><input class="field" id="applicantPhone"></div>
+            
+            <div class="form-row">
+                <label for="clubName">단체명</label>
+                <input class="field" id="clubName" type="text" value="${escapeHtml(userInfo.clubName)}" readonly>
+                <input type="hidden" id="clubId" value="${userInfo.clubId}">
+            </div>
+            <div class="form-row">
+                <label for="headcount">인원</label>
+                <input class="field" id="headcount" type="number" placeholder="참여 인원 입력" min="1">
+            </div>
+            <div class="form-row">
+                <label for="leaderName">신청자 아이디</label>
+                <input class="field" id="leaderName" type="text" value="${escapeHtml(userInfo.name) || state.memberId}" readonly>
+            </div>
+            <div class="form-row">
+                <label for="leaderPhone">휴대폰 번호</label>
+                <input class="field" id="leaderPhone" type="text" value="${escapeHtml(userInfo.phoneNumber)}" readonly>
+            </div>
+            
             <div class="actions">
                 <button class="secondary" type="button" onclick="location.href='/reservations'">이전</button>
                 <button class="primary" id="reservationSubmit" type="button">예약 확정</button>
             </div>
         </section>
     `);
-    document.getElementById('reservationSubmit').addEventListener('click', createReservation);
+    document.getElementById('reservationSubmit').addEventListener('click', createReservation)
 }
 
 async function createReservation() {
     const draft = JSON.parse(localStorage.getItem('bookkokReservationDraft') || '{}');
+
+    const clubIdVal = document.getElementById('clubId').value;
+    const headcountVal = document.getElementById('headcount').value;
+
+    if (!headcountVal || Number(headcountVal) < 1) {
+        alert('참여 인원을 정확히 입력해주세요.');
+        return;
+    }
+
+    if (!clubIdVal) {
+        alert('예약은 단체장만 가능합니다.');
+    }
+
     try {
         await api('/api/reservations', {
             method: 'POST',
             body: JSON.stringify({
-                clubId: Number(value('reservationClubId')),
+                clubId: Number(value(clubIdVal)),
                 reservationDate: draft.reservationDate,
                 reservationCourt: draft.reservationCourt,
                 reservationTime: draft.reservationTime,
-                headcount: Number(value('headcount'))
+                headcount: Number(headcountVal)
             })
         });
         location.href = '/reservations/done';

@@ -28,6 +28,9 @@ public class SecurityConfig {
 
     private static final String[] URL_TO_PERMIT = {
             "/",
+            "/css/**",
+            "/js/**",
+            "/images/**",
             "/ui/**",
             "/home",
             "/login",

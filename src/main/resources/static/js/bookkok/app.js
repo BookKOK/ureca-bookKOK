@@ -17,10 +17,7 @@ const app = document.getElementById('app');
 // 로그인 필요 안내 등 공통 모달 제어용 DOM 요소.
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modalMessage');
-const authButton = document.getElementById('authButton');
-
-// 프론트에서 공통으로 사용하는 상태 값.
-// 페이지 이동 후에도 로그인 상태를 유지하려고 localStorage에서 JWT와 회원 정보 읽어옴.
+const authArea = document.getElementById('authArea');
 const state = {
     token: localStorage.getItem('bookkokAccessToken') || '',
     memberId: localStorage.getItem('bookkokMemberId') || '',
@@ -48,21 +45,9 @@ document.getElementById('modalClose').addEventListener('click', hideModal);
 // -> 확인 클릭 -> /login 이동
 document.getElementById('modalOk').addEventListener('click', () => {
     hideModal();
-	if (modalRedirectUrl) {
-	        location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
-	}
-});
-
-// 상단 로그인/로그아웃 버튼 처리 담당.
-// 로그인 상태면 토큰 삭제 후 /login 이동.
-// 비로그인 상태면 바로 /login 이동.
-authButton.addEventListener('click', () => {
-    if (isLoggedIn()) {
-        clearAuth();
-        location.href = '/login';
-        return;
+    if (modalRedirectUrl) {
+        location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
     }
-    location.href = '/login';
 });
 
 // router.js의 boot() 함수에서 호출.

@@ -78,7 +78,9 @@ public class MemberService { // implements UserDetailsService
 	        throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
 	    }
 		
-		
+		if (!request.getPassword().equals(request.getPasswordCheck())) {
+	        throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+	    }
 		
 		Member member = Member.builder()
 	            .memberId(request.getMemberId())

@@ -182,7 +182,7 @@ async function signup() {
 				passwordCheck: value('signupPasswordCheck'),
                 name: value('signupName'),
                 email: value('signupEmail'),
-                phoneNumber: value('signupPhone')
+                phoneNumber: normalizePhone(value('signupPhone'))
             })
         });
         alert('회원가입이 완료되었습니다.');

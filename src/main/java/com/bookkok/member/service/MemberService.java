@@ -89,7 +89,7 @@ public class MemberService { // implements UserDetailsService
 	            .password(passwordEncoder.encode(request.getPassword()))
 	            .name(request.getName())
 	            .email(request.getEmail())
-	            .phoneNumber(PhoneNumberUtil.normalize(request.getPhoneNumber()))
+	            .phoneNumber(PhoneNumberUtil.normalizePhone(request.getPhoneNumber()))
 	            .roleName(RoleType.USER)
 	            .build();
 		

@@ -52,8 +52,28 @@ function renderMyPage() {
 
 					<tr>
 					    <th>전화번호</th>
-					    <td>${escapeHtml(formatPhoneNumber(state.phoneNumber))}</td>
-					    <td><button class="mini-btn" id="editPhone">수정</button></td>
+
+					    <td>
+					        ${editingField === "phone"
+					            ? html`
+					                <input id="phoneInput"
+					                    value="${formatPhoneNumber(state.phoneNumber || '')}">
+					            `
+					            : escapeHtml(formatPhoneNumber(state.phoneNumber || ''))
+					        }
+					    </td>
+
+					    <td>
+					        ${editingField === "phone"
+					            ? html`
+					                <button class="mini-btn" id="savePhone">저장</button>
+					                <button class="mini-btn" id="cancelEdit">취소</button>
+					            `
+					            : html`
+					                <button class="mini-btn" id="editPhone">수정</button>
+					            `
+					        }
+					    </td>
 					</tr>
 
 					<tr>
@@ -136,6 +156,13 @@ function renderMyPage() {
 	        renderMyPage();
 	    };
 	}
+	const editPhoneBtn = document.getElementById('editPhone');
+		if (editPhoneBtn) {
+		    editPhoneBtn.onclick = () => {
+		        editingField = "phone";
+		        renderMyPage();
+		    };
+		}
 	
 	document.addEventListener("click", async (e) => {
 	    if (!e.target.id.startsWith("save")) return;
@@ -150,9 +177,12 @@ function renderMyPage() {
 	        state.email = document.getElementById("emailInput").value;
 	    }
 
-	    if (type === "Phone") {
-	        state.phoneNumber = document.getElementById("phoneInput").value;
-	    }
+		if (type === "Phone") {
+		    state.phoneNumber = normalizePhone(
+		        document.getElementById("phoneInput").value
+		    );
+		}
+
 
 	    editingField = null;
 
@@ -191,7 +221,7 @@ function renderMyPage() {
 	document.getElementById('tabLogin').onclick = showLoginTab;
 	
 	// document.getElementById('editName').onclick = showNotReady;
-	document.getElementById('editPhone').onclick = showNotReady;
+	// document.getElementById('editPhone').onclick = showNotReady;
 	document.getElementById('editEmail').onclick = showNotReady;
 	
 }
@@ -216,7 +246,7 @@ function showLoginTab() {
     document.getElementById('tabLogin').classList.add('active');
 }
 
-function formatPhoneNumber(phone) {
+/*function formatPhoneNumber(phone) {
     if (!phone) return '';
 
     // +82 -> 0으로 변경
@@ -234,7 +264,7 @@ function formatPhoneNumber(phone) {
     }
 
     return phone;
-}
+}*/
 
 function formatDate(date) {
     if (!date) return '';
@@ -251,6 +281,8 @@ function formatDate(date) {
 async function loadData() {
     const data = await api('/api/members/me');
 
+	data.phoneNumber = normalizePhone(data.phoneNumber);
+	
     Object.assign(state, data);
 
     renderMyPage();

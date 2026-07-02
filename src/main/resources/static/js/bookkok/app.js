@@ -17,10 +17,7 @@ const app = document.getElementById('app');
 // 로그인 필요 안내 등 공통 모달 제어용 DOM 요소.
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modalMessage');
-const authButton = document.getElementById('authButton');
-
-// 프론트에서 공통으로 사용하는 상태 값.
-// 페이지 이동 후에도 로그인 상태를 유지하려고 localStorage에서 JWT와 회원 정보 읽어옴.
+const authArea = document.getElementById('authArea');
 const state = {
     token: localStorage.getItem('bookkokAccessToken') || '',
     memberId: localStorage.getItem('bookkokMemberId') || '',
@@ -30,6 +27,16 @@ const state = {
     selectedCourt: ''
 };
 
+const params = new URLSearchParams(location.search);
+const token = params.get("accessToken");
+
+if (token) {
+    saveLogin(token);
+    history.replaceState({}, "", "/home"); // 주소창에서 토큰 제거
+}
+
+let modalRedirectUrl = null; 
+
 // index.html의 모달 X 버튼 클릭 시 모달만 닫는 담당.
 document.getElementById('modalClose').addEventListener('click', hideModal);
 
@@ -38,19 +45,9 @@ document.getElementById('modalClose').addEventListener('click', hideModal);
 // -> 확인 클릭 -> /login 이동
 document.getElementById('modalOk').addEventListener('click', () => {
     hideModal();
-    location.href = '/login';
-});
-
-// 상단 로그인/로그아웃 버튼 처리 담당.
-// 로그인 상태면 토큰 삭제 후 /login 이동.
-// 비로그인 상태면 바로 /login 이동.
-authButton.addEventListener('click', () => {
-    if (isLoggedIn()) {
-        clearAuth();
-        location.href = '/login';
-        return;
+    if (modalRedirectUrl) {
+        location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
     }
-    location.href = '/login';
 });
 
 // router.js의 boot() 함수에서 호출.
@@ -66,7 +63,37 @@ function refreshAuthFromStorage() {
 // 관리자면 body에 is-admin 클래스를 붙여 관리자 메뉴 노출.
 function applyAuthUi() {
     document.body.classList.toggle('is-admin', isAdmin());
-    authButton.textContent = isLoggedIn() ? `${state.memberId || '회원'} 로그아웃` : '로그인';
+	if (isLoggedIn()) {
+	        authArea.innerHTML = `
+	            <a href="/mypage" class="member-link">
+	                ${state.memberId || '회원'}님
+	            </a>
+
+	            <button id="logoutButton" class="login-link">
+	                로그아웃
+	            </button>
+	        `;
+
+	        document
+	            .getElementById('logoutButton')
+	            .addEventListener('click', () => {
+	                clearAuth();
+	                location.href = "/home";
+	            });
+
+	    } else {
+	        authArea.innerHTML = `
+	            <button id="loginButton" class="login-link">
+	                로그인
+	            </button>
+	        `;
+
+	        document
+	            .getElementById('loginButton')
+	            .addEventListener('click', () => {
+	                location.href = "/login";
+	            });
+	    }
 }
 
 // 현재 프론트가 로그인 상태라고 판단하는 기준.
@@ -103,19 +130,21 @@ function requireLogin() {
     if (isLoggedIn()) {
         return true;
     }
-    showModal('로그인이 필요합니다.');
+    showModal('로그인이 필요합니다.', '/login');
     return false;
 }
 
 // 공통 모달 메시지 설정 후 화면에 표시.
-function showModal(message) {
+function showModal(message, redirectUrl = null) {
     modalMessage.textContent = message;
+	modalRedirectUrl = redirectUrl;
     modal.hidden = false;
 }
 
 // 공통 모달 숨김.
 function hideModal() {
     modal.hidden = true;
+	modalRedirectUrl = null;
 }
 
 // 화면별 JS에서 템플릿 문자열을 읽기 좋게 쓰기 위한 헬퍼.
@@ -169,14 +198,23 @@ async function api(path, options = {}) {
     const contentType = response.headers.get('content-type') || '';
     const body = contentType.includes('application/json') ? await response.json() : await response.text();
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
         clearAuth();
     }
 
-    if (!response.ok) {
-        const message = typeof body === 'string' ? body : JSON.stringify(body);
-        throw new Error(message || `요청 실패 (${response.status})`);
-    }
+	if (!response.ok) {
+		        let errorMessage = '';
+
+		        if (typeof body === 'string') {
+		            errorMessage = body;
+		        } else if (body && typeof body === 'object') {
+		            // 백엔드에서 주로 보내는 에러 필드명들 (message, error, detail 등)을 체크
+		            errorMessage = body.message || body.error || body.detail || JSON.stringify(body);
+		        }
+
+		        // 최종적으로 추출된 메시지가 없으면 status 코드와 함께 던짐
+		        throw new Error(errorMessage || `요청 실패 (${response.status})`);
+		    }
     return body;
 }
 

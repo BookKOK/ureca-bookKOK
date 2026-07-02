@@ -28,6 +28,9 @@ public class SecurityConfig {
 
     private static final String[] URL_TO_PERMIT = {
             "/",
+            "/css/**",
+            "/js/**",
+            "/images/**",
             "/ui/**",
             "/home",
             "/login",
@@ -39,10 +42,13 @@ public class SecurityConfig {
             "/admin",
             "/css/**",
             "/js/**",
+            "/images/**",
             "/index.html",
             "/favicon.ico",
             "/api/members/signup",
-            "/api/auth/login"
+            "/api/auth/login",
+            "/login/kakao/auth-code",
+            "/error"
 //            "/auth/**",
 //            "/v3/api-docs/**",
 //            "/swagger-ui/**"

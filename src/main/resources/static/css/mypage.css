@@ -36,8 +36,9 @@
     border-bottom: 1px solid #ececec;
 }
 
-.info-table tr:last-child {
-    border-bottom: none;
+.info-table td:last-child {
+    width: 80px;
+    text-align: right;
 }
 
 .info-table th {
@@ -59,6 +60,7 @@
     background: white;
     cursor: pointer;
     border-radius: 4px;
+    min-width: 56px;
 }
 
 .password-box {
@@ -77,4 +79,19 @@
 
 .hidden {
     display: none;
+}
+
+
+/* .password-message {
+    height: 20px; 
+    margin-top: 8px;
+    color: #d32f2f;
+    font-size: 14px;
+    visibility: hidden; 
+} */
+
+.password-message{
+    color:#d32f2f;
+    margin-top:10px;
+    font-size:14px;
 }

@@ -43,6 +43,7 @@ function renderMyPage() {
                     <tr>
                         <th>클럽</th>
                         <td>${escapeHtml(state.clubName || '없음')}</td>
+						<td></td>
                     </tr>
 
                     <tr>
@@ -66,7 +67,7 @@ function renderMyPage() {
 
                     <tr>
                         <th>비밀번호</th>
-                        <td>********</td>
+                        <td></td>
                         <td>
                             <button class="mini-btn" id="openPasswordChange">
                                 변경
@@ -79,10 +80,15 @@ function renderMyPage() {
                 <div class="password-box hidden" id="passwordBox">
                     <input id="currentPassword" type="password" placeholder="현재 비밀번호" />
                     <input id="newPassword" type="password" placeholder="새 비밀번호" />
+					<input id="newPasswordCheck" type="password" placeholder="새 비밀번호 확인" />
 
-                    <button class="primary" id="passwordSubmit">
-                        변경하기
-                    </button>
+					<p class="password-message"
+						       id="passwordMessage"
+						       hidden></p>
+
+					<button class="primary" id="passwordSubmit">
+					    변경하기
+					</button>
                 </div>
             </div>
 
@@ -108,13 +114,22 @@ function renderMyPage() {
     // 비밀번호 변경
     document.getElementById('passwordSubmit')
         .addEventListener('click', resetPassword);
-		
+	
+	["currentPassword", "newPassword", "newPasswordCheck"].forEach(id => {
+	    document.getElementById(id).addEventListener("keydown", e => {
+	        if (e.key === "Enter") {
+	            e.preventDefault();   // 엔터 기본 동작 방지
+	            resetPassword();
+	        }
+	    });
+	});
 	document.getElementById('tabProfile').onclick = showProfileTab;
 	document.getElementById('tabLogin').onclick = showLoginTab;
 	
 	document.getElementById('editName').onclick = showNotReady;
 	document.getElementById('editPhone').onclick = showNotReady;
 	document.getElementById('editEmail').onclick = showNotReady;
+	
 }
 
 function showProfileTab() {
@@ -178,17 +193,36 @@ async function loadData() {
 }
 
 async function resetPassword() {
+
+	const message = document.getElementById("passwordMessage");
+
+    if (!value("currentPassword") ||
+        !value("newPassword") ||
+        !value("newPasswordCheck")) {
+
+		message.hidden = false;
+        message.textContent = "모든 항목을 입력해주세요.";
+        return;
+    }
+
     try {
-        await api('/api/members/password/reset', {
-            method: 'POST',
-            body: JSON.stringify({
-                memberId: state.memberId,
-                currentPassword: value('currentPassword'),
-                newPassword: value('newPassword')
-            })
-        });
-        alert('비밀번호가 변경되었습니다.');
+		await api("/api/members/password/reset", {
+		    method: "POST",
+		    body: JSON.stringify({
+		        memberId: state.memberId,
+		        currentPassword: value("currentPassword"),
+		        newPassword: value("newPassword"),
+		        newPasswordCheck: value("newPasswordCheck")
+		    })
+		});
+
+        alert("비밀번호가 변경되었습니다.");
+
+        document.getElementById("passwordBox").classList.add("hidden");
+
     } catch (error) {
-        alert('비밀번호 변경에 실패했습니다.');
+		message.hidden = false;
+	    message.textContent = error.message;
+
     }
 }

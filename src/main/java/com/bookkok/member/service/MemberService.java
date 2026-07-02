@@ -127,6 +127,10 @@ public class MemberService { // implements UserDetailsService
 			throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
 		}
 		
+		if (!request.getNewPassword().equals(request.getNewPasswordCheck())) {
+		    throw new RuntimeException("새 비밀번호가 일치하지 않습니다.");
+		}
+		
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
 	}
 	

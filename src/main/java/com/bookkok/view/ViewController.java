@@ -25,6 +25,7 @@ public class ViewController {
             "/board/{postId}",
             "/board/{postId}/edit",
             "/mypage",
+            "/mypage/password",
             "/admin"
     })
 

@@ -30,6 +30,7 @@ const routes = [
     { pattern: /^\/board\/(\d+)$/, render: renderPostDetail },
     { pattern: /^\/board\/(\d+)\/edit$/, render: renderPostForm },
     { pattern: /^\/mypage$/, render: renderMyPage },
+	{ pattern: /^\/mypage\/password$/, render: renderPasswordPage },
     { pattern: /^\/admin$/, render: renderAdmin }
 ];
 

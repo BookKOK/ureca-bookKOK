@@ -44,10 +44,12 @@ document.getElementById('modalClose').addEventListener('click', hideModal);
 // 예: 예약 화면에서 비로그인 상태로 날짜를 누름 -> requireLogin() -> 모달 표시
 // -> 확인 클릭 -> /login 이동
 document.getElementById('modalOk').addEventListener('click', () => {
-    hideModal();
+    
     if (modalRedirectUrl) {
         location.href = modalRedirectUrl; // 경로가 지정되어 있으면 이동
     }
+	
+	hideModal();
 });
 
 // router.js의 boot() 함수에서 호출.

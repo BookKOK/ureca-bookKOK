@@ -6,6 +6,7 @@
     <title th:text="${appName}">BookKOK</title>
     <link rel="stylesheet" href="/css/bookkok.css">
     <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/mypage.css">
 </head>
 <body>
 <!--
@@ -19,7 +20,7 @@
 <div class="site-shell">
     <header class="top-header">
         <a class="logo" href="/home" aria-label="BookKOK 홈">
-        	<img src="images/BookKok_logo.webp" alt="예약콕">
+        	<img src="/images/BookKok_logo.webp" alt="예약콕">
         </a>
         <div id="authArea"></div>
     </header>
@@ -70,6 +71,7 @@
 <script src="/js/bookkok/pages/club/club.js"></script>
 <script src="/js/bookkok/pages/board/board.js"></script>
 <script src="/js/bookkok/pages/mypage/mypage.js"></script>
+<script src="/js/bookkok/pages/mypage/password.js"></script>
 <script src="/js/bookkok/pages/admin/admin.js"></script>
 <!--
     흐름 5) router.js를 마지막에 로드.

@@ -1,10 +1,8 @@
 package com.bookkok.member.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookkok.member.dto.TokenDto.TokenResponse;
-import com.bookkok.member.dto.MemberDto.LoginRequest;
+import com.bookkok.member.dto.MemberDto.ProfileResponse;
 import com.bookkok.member.dto.MemberDto.SignupRequest;
 import com.bookkok.member.dto.MemberDto.UpdatePasswordRequest;
-import com.bookkok.member.repository.MemberRepository;
 import com.bookkok.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +40,16 @@ public class MemberController {
 		
 		return ResponseEntity.ok().build();
 	}
+
+	@GetMapping("/me")
+    public ResponseEntity<ProfileResponse> getMyProfile(Authentication authentication) {
+		
+		String memberId = authentication.getName();
+
+	    ProfileResponse res = memberService.getProfile(memberId);
+	    
+        return ResponseEntity.ok(res);
+    }
 	
 	@DeleteMapping("/me")
 	public ResponseEntity<Void> deleteMember(Authentication authentication){

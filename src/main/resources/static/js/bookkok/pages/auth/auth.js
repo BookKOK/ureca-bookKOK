@@ -82,77 +82,78 @@ function kakaoLogin() {
 function renderSignup() {
     hideModal();
 	setApp(html`
-	<section class="signup-panel">
+	    <section class="login-panel">
 
-	    <h1 class="page-title">회원가입</h1>
+	        <h1 class="page-title">회원가입</h1>
 
-	    <!-- 계정 정보 -->
-	    <div class="signup-box">
+	        <!-- 계정 정보 -->
+	        <div class="signup-box">
 
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupId"
-	                   placeholder="아이디">
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupId"
+	                       placeholder="아이디">
+	            </div>
+
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupPassword"
+	                       type="password"
+	                       placeholder="비밀번호">
+	            </div>
+
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupPasswordCheck"
+	                       type="password"
+	                       placeholder="비밀번호 확인">
+	            </div>
+
 	        </div>
 
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupPassword"
-	                   type="password"
-	                   placeholder="비밀번호">
+	        <!-- 개인정보 -->
+	        <div class="signup-box">
+
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupName"
+	                       placeholder="이름">
+	            </div>
+
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupPhone"
+	                       placeholder="전화번호">
+	            </div>
+
+	            <div class="signup-row">
+	                <input class="field"
+	                       id="signupEmail"
+	                       placeholder="이메일">
+	            </div>
+
 	        </div>
 
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupPasswordCheck"
-	                   type="password"
-	                   placeholder="비밀번호 확인">
+	        <div id="signupMessage"
+	             class="signup-error"
+	             hidden></div>
+
+	        <div class="signup-buttons">
+	            <button class="secondary" id="signupCancel">
+	                취소
+	            </button>
+
+	            <button class="primary" id="signupSubmit">
+	                회원가입
+	            </button>
 	        </div>
 
-	    </div>
-
-	    <!-- 개인정보 -->
-	    <div class="signup-box">
-
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupName"
-	                   placeholder="이름">
-	        </div>
-
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupPhone"
-	                   placeholder="전화번호">
-	        </div>
-
-	        <div class="signup-row">
-	            <input class="field"
-	                   id="signupEmail"
-	                   placeholder="이메일">
-	        </div>
-
-	    </div>
-
-	    <p class="signup-error"
-	       id="signupMessage"
-	       hidden></p>
-
-	    <div class="signup-buttons">
-	        <button class="secondary"
-	                onclick="location.href='/login'">
-	            취소
-	        </button>
-
-	        <button class="primary"
-	                id="signupSubmit">
-	            회원가입
-	        </button>
-	    </div>
-
-	</section>
+	    </section>
 	`);
     document.getElementById('signupSubmit').addEventListener('click', signup);
+	document.getElementById('signupCancel').onclick = () => {
+	    location.href = "/login";
+	};
 }
 
 async function signup() {

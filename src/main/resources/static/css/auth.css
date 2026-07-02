@@ -1,0 +1,140 @@
+/*로그인*/
+
+#authArea{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.member-link{
+    text-decoration:none;
+    color:#333;
+    font-weight:bold;
+}
+
+.login-panel{
+    width:480px;
+    margin:80px auto;
+    padding:40px;
+    border:1px solid #ddd;
+    background:#fff;
+}
+
+.page-title{
+    text-align:center;
+    font-size:30px;
+    margin-bottom:35px;
+}
+
+.login-form{
+    display:flex;
+    gap:12px;
+    align-items:stretch;
+}
+
+.login-submit{
+    width:90px;
+    height:94px;
+    padding:0;
+}
+
+.login-inputs{
+    flex:1;
+}
+
+.login-inputs .form-row{
+    display:block;
+}
+
+.login-inputs label{
+    display:none;
+}
+
+
+
+
+.login-error {
+    color: #d32f2f;
+    font-size: 13px;
+    margin: 12px 0;
+    text-align: left;
+}
+
+.link-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 28px 0 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.link-row a {
+    color: #666;
+    text-decoration: none;
+}
+
+#kakaoLogin{
+    display:block;
+    width:200px;
+    margin:30px auto 0;
+    cursor:pointer;
+}
+
+#kakaoLogin:hover{
+    opacity:0.8;
+}
+
+
+/*회원가입*/
+.signup-panel{
+    width:420px;
+    margin:50px auto;
+}
+
+.signup-box{
+    border:1px solid #dcdcdc;
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+    margin-bottom:20px;
+}
+
+.signup-row{
+    border-bottom:1px solid #ececec;
+}
+
+.signup-row:last-child{
+    border-bottom:none;
+}
+
+.signup-row .field{
+    width:100%;
+    height:56px;
+    border:none;
+    padding:0 18px;
+    font-size:16px;
+    outline:none;
+    box-sizing:border-box;
+}
+
+.signup-row .field:focus{
+    background:#fafafa;
+}
+
+.signup-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:25px;
+}
+
+.signup-buttons button{
+    flex:1;
+    height:48px;
+}
+
+.signup-error{
+    color:#d32f2f;
+    margin-top:10px;
+    font-size:14px;
+}

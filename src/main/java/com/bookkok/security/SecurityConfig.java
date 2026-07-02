@@ -27,8 +27,29 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] URL_TO_PERMIT = {
+            "/",
+            "/css/**",
+            "/js/**",
+            "/images/**",
+            "/ui/**",
+            "/home",
+            "/login",
+            "/signup",
+            "/reservations/**",
+            "/clubs/**",
+            "/api/clubs/**",
+            "/board/**",
+            "/mypage/**",
+            "/admin",
+            "/css/**",
+            "/js/**",
+            "/images/**",
+            "/index.html",
+            "/favicon.ico",
             "/api/members/signup",
-            "/api/auth/login"
+            "/api/auth/login",
+            "/login/kakao/auth-code",
+            "/error"
 //            "/auth/**",
 //            "/v3/api-docs/**",
 //            "/swagger-ui/**"

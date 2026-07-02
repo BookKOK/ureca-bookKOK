@@ -25,21 +25,28 @@ public class ClubService {
      * @param leaderId : 개설 요청을 보낸 단체장의 고유 계정 ID (memberId)
      * @param request : 생성할 단체의 이름과 소개글이 담긴 DTO
      * @return 데이터베이스에 정상 저장된 단체의 고유 식별자 값
-     * @throws IllegalArgumentException : 요청된 단체 이름이 이미 데이터베이스에 존재하는 경우
+     * @throws IllegalArgumentException : 요청된 단체 이름이 이미 데이터베이스에 존재하는 경우,
+     *                                    요청한 회원 아이디가 데이터베이스에 존재하지 않는 경우
      */
     @Transactional
     public Long createClub(String leaderId, ClubDto.CreateRequest request) {
+        String trimmedName = request.getClubName().trim();
         if (clubRepository.existsByClubName(request.getClubName())) {
-            throw new IllegalArgumentException("이미 존재하는 단체 이름입니다.");
+            throw new IllegalArgumentException("NAME_DUPLICATE");
+        }
+
+        Member leader = clubRepository.findMemberByMemberId(leaderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (leader.getClub() != null) {
+            throw new IllegalStateException("JOINED_ALREADY");
         }
 
         Club club = request.toEntity(leaderId);
         Club savedClub = clubRepository.save(club);
 
-        Member leader = clubRepository.findMemberByMemberId(leaderId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         leader.updateClubId(savedClub);
-        leader.updateRoleName(RoleType.LEADER);
+        if (leader.getRoleName() != RoleType.ADMIN) leader.updateRoleName(RoleType.MEMBER);
 
         log.info("createClub 진입");
 
@@ -95,6 +102,7 @@ public class ClubService {
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
         member.updateClubId(null);
         member.updateRoleName(RoleType.USER);
+        club.subHeadcount();
     }
 
     /**
@@ -116,6 +124,7 @@ public class ClubService {
                 .orElseThrow(() -> new IllegalArgumentException("대상 회원을 찾을 수 없습니다."));
         member.updateClubId(null);
         member.updateRoleName(RoleType.USER);
+        club.subHeadcount();
     }
 
     /**
@@ -185,18 +194,19 @@ public class ClubService {
         }
 
         member.updateClubId(club);
-        member.updateRoleName(RoleType.MEMBER);
+        if (member.getRoleName() != RoleType.ADMIN) member.updateRoleName(RoleType.MEMBER);
+        club.addHeadcount();
     }
 
-//    /**
-//     * 10. 단체 이름 키워드로 검색
-//     * @param keyword : 검색할 키워드 문자열
-//     * @return 키워드가 포함된 단체 엔티티 리스트 (검색 결과가 없을 경우 null이 아닌 텅 빈 List 반환)
-//     */
-//    public List<Club> searchClubsByName(String keyword) {
-//        return clubRepository.findByClubNameContaining(keyword);
-//    }
-//
+    /**
+     * 10. 단체 이름 키워드로 검색
+     * @param keyword : 검색할 키워드 문자열
+     * @return 키워드가 포함된 단체 엔티티 리스트 (검색 결과가 없을 경우 null이 아닌 텅 빈 List 반환)
+     */
+    public List<Club> searchClubsByName(String keyword) {
+        return clubRepository.findByClubNameContaining(keyword);
+    }
+
 //    /**
 //     * 11. 단체장 이름으로 검색
 //     * @param leaderMemberId : 단체장의 고유 계정 아이디 (memberId)

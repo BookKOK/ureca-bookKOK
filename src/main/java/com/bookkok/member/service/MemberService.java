@@ -70,8 +70,16 @@ public class MemberService { // implements UserDetailsService
 			throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
 		}
 		
+		if (!request.getPassword().equals(request.getPasswordCheck())) {
+	        throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+	    }
+		
 		if (memberRepository.existsByEmail(request.getEmail())) {
 	        throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+	    }
+		
+		if (!request.getPassword().equals(request.getPasswordCheck())) {
+	        throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 	    }
 		
 		Member member = Member.builder()
@@ -119,8 +127,20 @@ public class MemberService { // implements UserDetailsService
 			throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
 		}
 		
+		if (!request.getNewPassword().equals(request.getNewPasswordCheck())) {
+		    throw new RuntimeException("새 비밀번호가 일치하지 않습니다.");
+		}
+		
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
 	}
+	
+	public ProfileResponse getProfile(String memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
+
+        return ProfileResponse.from(member);
+    }
 	
 	@Transactional
 	/**

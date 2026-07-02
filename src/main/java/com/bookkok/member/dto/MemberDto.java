@@ -22,6 +22,7 @@ public class MemberDto {
 
 	    private String memberId;
 	    private String password;
+	    private String passwordCheck;
 	    private String name;
 	    private String email;
 	    private String phoneNumber;
@@ -79,6 +80,7 @@ public class MemberDto {
 		private String memberId;
 	    private String currentPassword;
 	    private String newPassword;
+	    private String newPasswordCheck;
 	}
 	
 //	@Getter

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appName}">BookKOK</title>
+    <link rel="stylesheet" href="/css/bookkok.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+<div class="site-shell">
+    <header class="top-header">
+        <a class="logo" href="/home" aria-label="BookKOK 홈">
+        	<img src="images/BookKok_logo.webp" alt="예약콕">
+        </a>
+        <div id="authArea"></div>
+    </header>
+    <nav class="main-nav">
+        <a href="/reservations">시설 예약</a>
+        <a href="/clubs">단체 관리</a>
+        <a href="/board">게시판</a>
+        <a href="/mypage" onclick="return requireLogin();">마이페이지</a>
+        <a class="admin-only" href="/admin">관리자</a>
+    </nav>
+    <main id="app" class="page-content"></main>
+</div>
+
+<div class="modal-backdrop" id="modal" hidden>
+    <div class="modal">
+        <button class="modal-close" type="button" id="modalClose">x</button>
+        <div class="modal-icon">!</div>
+        <p id="modalMessage">로그인이 필요합니다.</p>
+        <button class="primary small" type="button" id="modalOk">확인</button>
+    </div>
+</div>
+
+<script src="/js/bookkok/app.js"></script>
+<script src="/js/bookkok/pages/auth/auth.js"></script>
+<script src="/js/bookkok/pages/home.js"></script>
+<script src="/js/bookkok/pages/reservation/reservation.js"></script>
+<script src="/js/bookkok/pages/club/club.js"></script>
+<script src="/js/bookkok/pages/board/board.js"></script>
+<script src="/js/bookkok/pages/mypage/mypage.js"></script>
+<script src="/js/bookkok/pages/admin/admin.js"></script>
+<script src="/js/bookkok/router.js"></script>
+</body>
+</html>

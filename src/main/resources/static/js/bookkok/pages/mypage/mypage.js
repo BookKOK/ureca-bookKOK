@@ -122,13 +122,13 @@ function renderMyPage() {
 	            resetPassword();
 	        }
 	    });
-	});
+	});*/
 	document.getElementById('tabProfile').onclick = showProfileTab;
 	document.getElementById('tabLogin').onclick = showLoginTab;
 	
 	document.getElementById('editName').onclick = showNotReady;
 	document.getElementById('editPhone').onclick = showNotReady;
-	document.getElementById('editEmail').onclick = showNotReady;*/
+	document.getElementById('editEmail').onclick = showNotReady;
 	
 }
 

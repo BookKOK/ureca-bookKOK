@@ -38,7 +38,7 @@ public class SecurityConfig {
             "/reservations/**",
             "/clubs/**",
             "/board/**",
-            "/mypage",
+            "/mypage/**",
             "/admin",
             "/css/**",
             "/js/**",

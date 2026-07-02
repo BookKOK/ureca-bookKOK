@@ -76,24 +76,19 @@ function renderMyPage() {
                     </tr>
                 </table>
 
-                <!-- 비밀번호 변경 폼 -->
-                <div class="password-box hidden" id="passwordBox">
-                    <input id="currentPassword" type="password" placeholder="현재 비밀번호" />
-                    <input id="newPassword" type="password" placeholder="새 비밀번호" />
-					<input id="newPasswordCheck" type="password" placeholder="새 비밀번호 확인" />
-
-					<p class="password-message"
-						       id="passwordMessage"
-						       hidden></p>
-
-					<button class="primary" id="passwordSubmit">
-					    변경하기
-					</button>
-                </div>
             </div>
 
         </section>
     `);
+	
+	const params = new URLSearchParams(location.search);
+	const tab = params.get("tab");
+
+	if (tab === "login") {
+	    showLoginTab();
+	} else {
+	    showProfileTab();
+	}
 
     // 탭 전환
     document.getElementById('tabProfile').onclick = () => {
@@ -107,7 +102,12 @@ function renderMyPage() {
     };
 
     // 비밀번호 변경 열기
-    document.getElementById('openPasswordChange').onclick = () => {
+	
+	document.getElementById("openPasswordChange").onclick = () => {
+	    location.href = "/mypage/password";
+	};
+	
+    /*document.getElementById('openPasswordChange').onclick = () => {
         document.getElementById('passwordBox').classList.toggle('hidden');
     };
 
@@ -128,7 +128,7 @@ function renderMyPage() {
 	
 	document.getElementById('editName').onclick = showNotReady;
 	document.getElementById('editPhone').onclick = showNotReady;
-	document.getElementById('editEmail').onclick = showNotReady;
+	document.getElementById('editEmail').onclick = showNotReady;*/
 	
 }
 
@@ -192,37 +192,3 @@ async function loadData() {
     renderMyPage();
 }
 
-async function resetPassword() {
-
-	const message = document.getElementById("passwordMessage");
-
-    if (!value("currentPassword") ||
-        !value("newPassword") ||
-        !value("newPasswordCheck")) {
-
-		message.hidden = false;
-        message.textContent = "모든 항목을 입력해주세요.";
-        return;
-    }
-
-    try {
-		await api("/api/members/password/reset", {
-		    method: "POST",
-		    body: JSON.stringify({
-		        memberId: state.memberId,
-		        currentPassword: value("currentPassword"),
-		        newPassword: value("newPassword"),
-		        newPasswordCheck: value("newPasswordCheck")
-		    })
-		});
-
-        alert("비밀번호가 변경되었습니다.");
-
-        document.getElementById("passwordBox").classList.add("hidden");
-
-    } catch (error) {
-		message.hidden = false;
-	    message.textContent = error.message;
-
-    }
-}

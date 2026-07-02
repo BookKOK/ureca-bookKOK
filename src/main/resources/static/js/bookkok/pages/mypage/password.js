@@ -85,7 +85,6 @@ async function resetPassword() {
 
         alert("비밀번호가 변경되었습니다.");
 
-        document.getElementById("passwordBox").classList.add("hidden");
 		location.href = "/mypage?tab=login";
 		
     } catch (error) {

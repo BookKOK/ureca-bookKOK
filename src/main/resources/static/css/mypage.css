@@ -1,0 +1,102 @@
+.mypage-container {
+    max-width: 900px;
+    margin: 50px auto;
+}
+
+.card {
+    margin-top: 20px;
+}
+.mypage-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    flex: 1;
+    height: 48px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.tab.active {
+    color: #049b7d;
+    border-bottom: 3px solid #049b7d;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table tr {
+    border-bottom: 1px solid #ececec;
+}
+
+.info-table td:last-child {
+    width: 80px;
+    text-align: right;
+}
+
+.info-table th {
+    width: 100px;
+    padding: 18px;
+    background: #fafafa;
+    font-weight: 600;
+    color: #555;
+}
+
+.info-table td {
+    padding: 18px;
+}
+
+.mini-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+    min-width: 56px;
+}
+
+.password-box{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.password-box .field{
+    width:100%;
+    height:52px;
+    padding:0 16px;
+    border:1px solid #ddd;
+    border-radius:4px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.password-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.password-buttons button {
+    flex: 1;
+    height: 48px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.password-message{
+    color:#d32f2f;
+    margin-top:10px;
+    font-size:14px;
+}

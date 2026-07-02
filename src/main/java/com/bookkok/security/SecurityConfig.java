@@ -39,7 +39,7 @@ public class SecurityConfig {
             "/clubs/**",
             "/api/clubs/**",
             "/board/**",
-            "/mypage",
+            "/mypage/**",
             "/admin",
             "/css/**",
             "/js/**",

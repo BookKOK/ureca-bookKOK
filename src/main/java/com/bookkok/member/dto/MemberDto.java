@@ -80,6 +80,7 @@ public class MemberDto {
 		private String memberId;
 	    private String currentPassword;
 	    private String newPassword;
+	    private String newPasswordCheck;
 	}
 	
 //	@Getter

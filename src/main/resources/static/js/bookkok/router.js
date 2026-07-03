@@ -22,6 +22,8 @@ const routes = [
     { pattern: /^\/$|^\/home$|^\/reservations$/, render: renderReservationStep1 },
     { pattern: /^\/reservations\/info$/, render: renderReservationStep2 },
     { pattern: /^\/reservations\/done$/, render: renderReservationDone },
+    { pattern: /^\/reservations\/my$/, render: renderMyReservations },
+    { pattern: /^\/reservations\/detail\/(\d+)$/, render: renderReservationDetail },
     { pattern: /^\/clubs$/, render: renderClubs },
     { pattern: /^\/clubs\/new$/, render: renderClubForm },
     { pattern: /^\/clubs\/(\d+)$/, render: renderClubDetail },

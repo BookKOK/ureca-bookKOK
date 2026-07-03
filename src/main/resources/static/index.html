@@ -26,9 +26,9 @@
     </header>
     <nav class="main-nav">
         <a href="/reservations">시설 예약</a>
+        <a href="/reservations/my" onclick="return requireLogin();">예약 확인</a>
         <a href="/clubs">단체 관리</a>
         <a href="/board">게시판</a>
-        <a href="/mypage" onclick="return requireLogin();">마이페이지</a>
         <a class="admin-only" href="/admin">관리자</a>
     </nav>
     <!--
@@ -68,6 +68,7 @@
 <script src="/js/bookkok/pages/auth/auth.js"></script>
 <script src="/js/bookkok/pages/home.js"></script>
 <script src="/js/bookkok/pages/reservation/reservation.js"></script>
+<script src="/js/bookkok/pages/reservation/myReservation.js"></script>
 <script src="/js/bookkok/pages/club/club.js"></script>
 <script src="/js/bookkok/pages/board/board.js"></script>
 <script src="/js/bookkok/pages/mypage/mypage.js"></script>

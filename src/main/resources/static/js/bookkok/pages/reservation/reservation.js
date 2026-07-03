@@ -127,13 +127,22 @@ function renderReservationChoices() {
     const times = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
     const courts = ['1번 코트', '2번 코트', '3번 코트', '4번 코트', '5번 코트'];
 
+    const timeGridEl = document.getElementById('timeGrid');
+    const courtListEl = document.getElementById('courtList');
+
+    //날짜를 아직 선택하지 않은 경우
+    if (!state.selectedDate) {
+        timeGridEl.innerHTML = '<div style="padding: 1rem; color: #888; grid-column: 1 / -1;">날짜를 먼저 선택해주세요.</div>';
+        courtListEl.innerHTML = '<div style="padding: 1rem; color #888;">날짜와 시간을 먼저 선택해주세요.</div>';
+        return;
+    }
+
+    //2. 날짜를 선택한 경우 -> 시간 목록 띄우기
     const dateReservations = Array.isArray(state.monthlyReservations)
             ? state.monthlyReservations.filter(res => res.reservationDate === state.selectedDate)
             : [];
 
-    //시간 선택 영역 렌더링
-    document.getElementById('timeGrid').innerHTML = times.map(time => {
-        //해당 시간대의 예약 건수 확인
+    timeGridEl.innerHTML = times.map(time => {
         const bookedCount = dateReservations.filter(res => String(res.reservationTime || '').startsWith(time)).length;
         const isClosed = bookedCount >= 5;
         const isSelected = state.selectedTime === time;
@@ -145,22 +154,21 @@ function renderReservationChoices() {
                 </button>`;
     }).join('');
 
-    document.getElementById('timeGrid').querySelectorAll('button:not([disabled])').forEach(button => {
+    timeGridEl.querySelectorAll('button:not([disabled])').forEach(button => {
         button.addEventListener('click', () => {
             if (!requireLogin()) return;
             state.selectedTime = button.dataset.time;
-            state.selectedCourt = null; //시간이 바뀌면 코트 선택 초기화
+            state.selectedCourt = null;
             renderReservationChoices();
-        });
-    });
+        })
+    })
 
-    const courtListEl = document.getElementById('courtList');
-
-    if (!state.selectedTime) { //시간을 아직 선택하지 않았을 때
+    //3. 시간 선택
+    if (!state.selectedTime) {
         courtListEl.innerHTML = '<div style="padding: 1rem; color: #888;">시간을 먼저 선택해 주세요.</div>';
     } else { //선택된 날짜+시간에 이미 예약된 코트 이름 목록 추출
         const bookedCourts = dateReservations
-            .filter(res => res.reservationTime.startsWith(state.selectedTime))
+            .filter(res => String(res.reservationTime || '' ).startsWith(state.selectedTime))
             .map(res => res.reservationCourt);
 
         courtListEl.innerHTML = courts.map(court => {

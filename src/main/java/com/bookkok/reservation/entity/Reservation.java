@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -40,10 +39,10 @@ public class Reservation {
 
     @CreationTimestamp
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     @Builder
-    public Reservation(Club club, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDateTime createdDate) {
+    public Reservation(Club club, LocalDate reservationDate, String reservationCourt, LocalTime reservationTime, int headcount, LocalDate createdDate) {
         this.club = club;
         this.reservationDate = reservationDate;
         this.reservationCourt = reservationCourt;

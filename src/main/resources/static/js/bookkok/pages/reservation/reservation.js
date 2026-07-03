@@ -129,7 +129,7 @@ async function renderReservationStep2() {
         <section class="wide-panel">
             <h1 class="sub-title">예약 정보 입력</h1>
             <div class="notice">선택 정보: ${escapeHtml(draft.reservationDate)} / ${escapeHtml(draft.reservationTime)} / ${escapeHtml(draft.reservationCourt)}</div>
-            
+
             <div class="form-row">
                 <label for="clubName">단체명</label>
                 <input class="field" id="clubName" type="text" value="${escapeHtml(userInfo.clubName)}" readonly>
@@ -147,7 +147,7 @@ async function renderReservationStep2() {
                 <label for="leaderPhone">휴대폰 번호</label>
                 <input class="field" id="leaderPhone" type="text" value="${escapeHtml(userInfo.phoneNumber)}" readonly>
             </div>
-            
+
             <div class="actions">
                 <button class="secondary" type="button" onclick="location.href='/reservations'">이전</button>
                 <button class="primary" id="reservationSubmit" type="button">예약 확정</button>

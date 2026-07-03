@@ -78,7 +78,7 @@ public class ReservationDto {
         private String reservationCourt;
         private LocalTime reservationTime;
         private int headcount;
-        private LocalDateTime createdDate;
+        private LocalDate createdDate;
 
         public static DetailResponse from(Reservation reservation) {
             return DetailResponse.builder()

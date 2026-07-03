@@ -11,6 +11,25 @@ async function renderReservationStep1() {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
+
+    //달력 시작일과 종료일 계산
+    const startDate = `${year}-${String(month+1).padStart(2, '0')}-01`;
+    const lastDay = new Date(year, month+1, 0).getDate();
+    const endDate = `${year}-${String(month+1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+    //전역 state에 월별 예약 데이터 초기화
+    if (!window.state) window.state = {};
+    window.state.monthlyReservations = [];
+
+    try {
+        const response = await api(`/api/reservations/calendar?startDate=${startDate}&endDate=${endDate}`);
+        if (response && Array.isArray(response)) {
+            state.monthlyReservations = response;
+        }
+    } catch (error) {
+        console.error("예약 현황을 불러오지 못했습니다.", error);
+    }
+
     setApp(html`
         ${renderSteps(1)}
         <section class="calendar-layout">
@@ -48,47 +67,122 @@ function renderCalendar(year, month) {
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
     const cells = dayNames.map(name => `<div class="day-name">${name}</div>`);
+
     for (let i = 0; i < first.getDay(); i += 1) {
         cells.push('<div class="day-cell muted"></div>');
     }
+
+    //예약 데이터를 날짜 -> 시간 -> 코트 수 형태로 그룹화
+    const dailyStats = {};
+    if (Array.isArray(state.monthlyReservations)) {
+        state.monthlyReservations.forEach(res => {
+            const date = res.reservationDate;
+            const time = String(res.reservationTime || '').substring(0, 5); //"00:00" 형식
+
+            if (!dailyStats[date]) dailyStats[date] = {};
+            if (!dailyStats[date][time]) dailyStats[date][time] = 0;
+            dailyStats[date][time]++;
+        });
+    }
+
     for (let day = 1; day <= last.getDate(); day += 1) {
         const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        cells.push(`<button class="day-cell" type="button" data-date="${date}">${day}<div class="day-meta">0/14</div></button>`);
+
+        //해당 날짜에 마감된 시간대 개수 계산
+        let closedTimeCount = 0;
+        if (dailyStats[date]) {
+            Object.values(dailyStats[date]).forEach(courtCount => {
+                if (courtCount >= 5) closedTimeCount++;
+            });
+        }
+
+        const isAllClosed = closedTimeCount === 14;
+        const btnClass = `day-cell ${isAllClosed ? 'muted' : ''} ${state.selectedDate === date ? 'selected' : ''}`;
+
+        //모든 시간이 마감되었다면 disabled 처리'
+        cells.push(`<button class="${btnClass}" type="button" data-date="${date}" ${isAllClosed ? 'disabled' : ''}>
+                        ${day}
+                        <div class="day-meta">${closedTimeCount}/14</div>
+                    </button>`);
     }
+
     calendar.innerHTML = cells.join('');
+
     calendar.querySelectorAll('[data-date]').forEach(cell => {
         cell.addEventListener('click', () => {
             if (!requireLogin()) return;
             state.selectedDate = cell.dataset.date;
+            state.selectedTime = null;
+            state.selectedCourt = null;
+
             calendar.querySelectorAll('.day-cell').forEach(item => item.classList.remove('selected'));
             cell.classList.add('selected');
+
+            renderReservationChoices();
         });
     });
 }
 
 function renderReservationChoices() {
     const times = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
-    document.getElementById('timeGrid').innerHTML = times.map(time => `<button type="button" data-time="${time}">${time}</button>`).join('');
-    document.getElementById('timeGrid').querySelectorAll('button').forEach(button => {
+    const courts = ['1번 코트', '2번 코트', '3번 코트', '4번 코트', '5번 코트'];
+
+    const dateReservations = Array.isArray(state.monthlyReservations)
+            ? state.monthlyReservations.filter(res => res.reservationDate === state.selectedDate)
+            : [];
+
+    //시간 선택 영역 렌더링
+    document.getElementById('timeGrid').innerHTML = times.map(time => {
+        //해당 시간대의 예약 건수 확인
+        const bookedCount = dateReservations.filter(res => String(res.reservationTime || '').startsWith(time)).length;
+        const isClosed = bookedCount >= 5;
+        const isSelected = state.selectedTime === time;
+
+        return `<button type="button" data-time="${time}"
+                    class="${isClosed ? 'muted' : ''} ${isSelected ? 'selected' : ''}"
+                    ${isClosed || !state.selectedDate ? 'disabled' : ''}>
+                    ${time}
+                </button>`;
+    }).join('');
+
+    document.getElementById('timeGrid').querySelectorAll('button:not([disabled])').forEach(button => {
         button.addEventListener('click', () => {
             if (!requireLogin()) return;
             state.selectedTime = button.dataset.time;
-            document.querySelectorAll('#timeGrid button').forEach(item => item.classList.remove('selected'));
-            button.classList.add('selected');
+            state.selectedCourt = null; //시간이 바뀌면 코트 선택 초기화
+            renderReservationChoices();
         });
     });
 
-    document.getElementById('courtList').innerHTML = [1, 2, 3, 4, 5]
-        .map(num => `<button type="button" data-court="${num}번 코트">${num}번 코트 (예약 가능)</button>`)
-        .join('');
-    document.getElementById('courtList').querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', () => {
-            if (!requireLogin()) return;
-            state.selectedCourt = button.dataset.court;
-            document.querySelectorAll('#courtList button').forEach(item => item.classList.remove('selected'));
-            button.classList.add('selected');
+    const courtListEl = document.getElementById('courtList');
+
+    if (!state.selectedTime) { //시간을 아직 선택하지 않았을 때
+        courtListEl.innerHTML = '<div style="padding: 1rem; color: #888;">시간을 먼저 선택해 주세요.</div>';
+    } else { //선택된 날짜+시간에 이미 예약된 코트 이름 목록 추출
+        const bookedCourts = dateReservations
+            .filter(res => res.reservationTime.startsWith(state.selectedTime))
+            .map(res => res.reservationCourt);
+
+        courtListEl.innerHTML = courts.map(court => {
+            const isBooked = bookedCourts.includes(court);
+            const isSelected = state.selectedCourt === court;
+            const statusText = isBooked ? '(예약 마감)' : '(예약 가능)';
+
+            return `<button type="button" data-court="${court}"
+                        class="${isBooked ? 'muted' : ''} ${isSelected ? 'selected' : ''}"
+                        ${isBooked ? 'disabled' : ''}>
+                        ${court} ${statusText}
+                    </button>`;
+        }).join('');
+
+        courtListEl.querySelectorAll('button:not([disabled])').forEach(button => {
+            button.addEventListener('click', () => {
+                if (!requireLogin()) return;
+                state.selectedCourt = button.dataset.court;
+                renderReservationChoices();
+            });
         });
-    });
+    }
 }
 
 function goReservationInfo() {

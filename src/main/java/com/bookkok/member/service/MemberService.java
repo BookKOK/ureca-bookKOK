@@ -21,6 +21,8 @@ import com.bookkok.member.dto.MemberDto.LoginRequest;
 import com.bookkok.member.dto.MemberDto.ProfileResponse;
 import com.bookkok.member.dto.MemberDto.SignupRequest;
 import com.bookkok.member.dto.MemberDto.UpdatePasswordRequest;
+import com.bookkok.member.dto.MemberDto.UpdateProfileRequest;
+import com.bookkok.member.dto.MemberDto.UpdateProfileResponse;
 import com.bookkok.member.entity.Member;
 import com.bookkok.member.entity.RoleType;
 
@@ -87,7 +89,7 @@ public class MemberService { // implements UserDetailsService
 	            .password(passwordEncoder.encode(request.getPassword()))
 	            .name(request.getName())
 	            .email(request.getEmail())
-	            .phoneNumber(PhoneNumberUtil.normalize(request.getPhoneNumber()))
+	            .phoneNumber(PhoneNumberUtil.normalizePhone(request.getPhoneNumber()))
 	            .roleName(RoleType.USER)
 	            .build();
 		
@@ -134,6 +136,32 @@ public class MemberService { // implements UserDetailsService
 		member.changePassword(passwordEncoder.encode(request.getNewPassword()));
 	}
 	
+	@Transactional
+	public UpdateProfileResponse updateProfile(String memberId, UpdateProfileRequest request) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+
+        if (request.getName() != null) {
+            member.setName(request.getName());
+        }
+
+        if (request.getEmail() != null) {
+            member.setEmail(request.getEmail());
+        }
+
+        if (request.getPhoneNumber() != null) {
+            member.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        return UpdateProfileResponse.builder()
+                .memberId(member.getMemberId())
+                .name(member.getName())
+                .email(member.getEmail())
+                .phoneNumber(member.getPhoneNumber())
+                .build();
+    }
+
 	public ProfileResponse getProfile(String memberId) {
 
         Member member = memberRepository.findById(memberId)

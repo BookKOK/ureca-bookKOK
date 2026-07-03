@@ -1,6 +1,6 @@
 package com.bookkok.admin.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -111,7 +111,7 @@ public class AdminReservationService {
                 AdminReservationDto.ForceCancelResponse.builder()
                         .reservationId(reservation.getReservationId())
                         .reason(null)
-                        .canceledAt(LocalDateTime.now())
+                        .canceledAt(LocalDate.now())
                         .build();
 
         // 7. 결과 반환

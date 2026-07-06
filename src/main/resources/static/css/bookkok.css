@@ -506,3 +506,34 @@ select {
     width: auto;
     display: block;
 }
+
+.list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 12px;
+    border-bottom: 1px solid #aaa;
+}
+
+.list-row:last-child {
+    border-bottom: 0;
+}
+
+.list-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.list-link {
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.list-num {
+    color: #777;
+    margin-right: 8px;
+    display: inline-block;
+    min-width: 20px;
+}

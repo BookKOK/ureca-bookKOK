@@ -17,6 +17,8 @@ public class ViewController {
             "/reservations",
             "/reservations/info",
             "/reservations/done",
+            "/reservations/my",
+            "/reservations/detail/{reservationId}",
             "/clubs",
             "/clubs/new",
             "/clubs/{clubId}",

@@ -32,6 +32,7 @@ async function renderReservationStep1() {
                     <div class="court-list" id="courtList"></div>
                 </div>
                 <div class="actions">
+                    <button class="secondary" id="eventCreateBtn" type="button" onclick="renderEventModal()">행사 등록</button>
                     <button class="primary" id="reservationNext" type="button">다음</button>
                 </div>
             </aside>
@@ -40,6 +41,16 @@ async function renderReservationStep1() {
     renderCalendar(year, month);
     renderReservationChoices();
     document.getElementById('reservationNext').addEventListener('click', goReservationInfo);
+
+    // 관리자 버튼 로직
+    const eventBtn = document.getElementById('eventCreateBtn');
+// state.role 등 사용자 권한 정보를 가지고 있다면 활용, 없으면 localStorage 등에서 확인
+    const userRole = localStorage.getItem('role');
+
+    if (userRole === 'ADMIN') {
+        eventBtn.style.display = 'inline-block'; // 관리자면 보이게 함
+        eventBtn.addEventListener('click', openEventModal); // 팝업 열기 함수 연결
+    }
 }
 
 function renderCalendar(year, month) {

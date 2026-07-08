@@ -1,7 +1,12 @@
 async function renderBoard() {
     setApp(html`
         <section class="wide-panel">
-            <div class="board-filter"></div>
+            <div class="search-box">
+                <div class="search-line">
+                    <input class="field" id="postKeyword" placeholder="제목이나 내용으로 검색">
+                    <button class="primary" id="postSearch" type="button">검색</button>
+                </div>
+            </div>
             <div class="actions">
                 <button class="primary" type="button" onclick="location.href='/board/new'">글쓰기</button>
             </div>
@@ -20,13 +25,23 @@ async function renderBoard() {
             </table>
         </section>
     `);
+    document.getElementById('postSearch').addEventListener('click', () => {
+        loadPosts(document.getElementById('postKeyword').value);
+    });
     await loadPosts();
 }
 
-async function loadPosts() {
+// keyword를 매개변수로 받고, 기본값은 빈 문자열로 설정합니다.
+async function loadPosts(keyword = '') {
     const rows = document.getElementById('postRows');
     try {
-        const posts = await api('/api/posts');
+        // 검색어가 있으면 검색 API 호출, 없으면 전체 목록 API 호출
+        const url = keyword
+            ? `/api/posts/search?keyword=${encodeURIComponent(keyword)}`
+            : '/api/posts';
+
+        const posts = await api(url);
+
         rows.innerHTML = posts.length
             ? posts.map(post => html`
                     <tr>

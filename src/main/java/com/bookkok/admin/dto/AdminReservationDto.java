@@ -1,7 +1,6 @@
 package com.bookkok.admin.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import com.bookkok.reservation.entity.Reservation;
@@ -43,7 +42,7 @@ public class AdminReservationDto {
         private String reservationCourt;
         private LocalTime reservationTime;
         private int headcount;
-        private LocalDateTime createdDate;
+        private LocalDate createdDate;
 
         public static SummaryResponse from(Reservation reservation) {
             return SummaryResponse.builder()
@@ -72,7 +71,7 @@ public class AdminReservationDto {
         private String reservationCourt;
         private LocalTime reservationTime;
         private int headcount;
-        private LocalDateTime createdDate;
+        private LocalDate createdDate;
     }
 
     // 관리자가 예약을 강제로 취소할 때 입력하는 사유입니다.
@@ -94,7 +93,7 @@ public class AdminReservationDto {
     public static class ForceCancelResponse {
         private Long reservationId;
         private String reason;
-        private LocalDateTime canceledAt;
+        private LocalDate canceledAt;
     }
 
     private AdminReservationDto() {

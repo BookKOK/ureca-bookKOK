@@ -112,4 +112,10 @@ public class PostService {
             return true;
         }
     }
+    public List<PostDto.ListResponse> searchPosts(String keyword) {
+
+        return postRepository.searchByTitleOrContent(keyword).stream()
+                .map(PostDto.ListResponse::from)
+                .collect(Collectors.toList());
+    }
 }

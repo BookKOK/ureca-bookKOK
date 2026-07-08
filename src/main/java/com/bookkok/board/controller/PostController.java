@@ -75,4 +75,9 @@ public class PostController {
         boolean isLiked = postService.toggleLike(postId, loginMember);
         return ResponseEntity.ok(isLiked);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostDto.ListResponse>> searchPosts(@RequestParam String keyword) {
+        return ResponseEntity.ok(postService.searchPosts(keyword));
+    }
 }

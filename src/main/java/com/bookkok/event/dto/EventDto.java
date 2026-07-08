@@ -14,13 +14,13 @@ public class EventDto {
     @NoArgsConstructor
     public static class CreateRequest {
         private LocalDate reservationDate;
-        private String reservationCourt;
+        private List<String> reservationCourts;
         private List<LocalTime> reservationTimes;
 
         @Builder
-        private CreateRequest(LocalDate reservationDate, String reservationCourt, List<LocalTime> reservationTimes) {
+        private CreateRequest(LocalDate reservationDate, List<String> reservationCourts, List<LocalTime> reservationTimes) {
             this.reservationDate = reservationDate;
-            this.reservationCourt = reservationCourt;
+            this.reservationCourts = reservationCourts;
             this.reservationTimes = reservationTimes;
         }
     }

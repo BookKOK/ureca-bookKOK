@@ -34,15 +34,17 @@ public class EventService {
         Club adminClub = clubRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("시스템 관리자 클럽이 존재하지 않습니다."));
 
-        for(LocalTime time : request.getReservationTimes()){
-            Reservation reservation = Reservation.builder()
-                    .club(adminClub)
-                    .reservationDate(request.getReservationDate())
-                    .reservationCourt(request.getReservationCourt())
-                    .reservationTime(time)
-                    .headcount(0)
-                    .build();
-            reservationRepository.save(reservation);
+        for(String court : request.getReservationCourts()) {
+            for (LocalTime time : request.getReservationTimes()) {
+                Reservation reservation = Reservation.builder()
+                        .club(adminClub)
+                        .reservationDate(request.getReservationDate())
+                        .reservationCourt(court)
+                        .reservationTime(time)
+                        .headcount(0)
+                        .build();
+                reservationRepository.save(reservation);
+            }
         }
     }
 

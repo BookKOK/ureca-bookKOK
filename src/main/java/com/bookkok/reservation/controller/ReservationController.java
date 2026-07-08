@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,12 +22,14 @@ public class ReservationController {
     /**
      * 1. 예약 생성 [HTTP POST /api/reservations]
      * @param request : 클라이언트로부터 수신한 json 데이터 (예약 날짜, 시간, 코트, 인원, 소속 단체 id)
+     * @param principal : 현재 로그인한 사용자의 인증 정보
      * @return http 201 (Created) 헤더 및 생성된 예약의 식별자 번호
      * 중복 예약이 존재하거나 예약하는 단체 id가 실재하지 않을 경우 예외 발생
      */
     @PostMapping
-    public ResponseEntity<Long> createReservation(@RequestBody ReservationDto.CreateRequest request) {
-        Long reservationId = reservationService.createReservation(request);
+    public ResponseEntity<Long> createReservation(@RequestBody ReservationDto.CreateRequest request,
+                                                  Principal principal) {
+        Long reservationId = reservationService.createReservation(principal.getName(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(reservationId);
     }
 
@@ -102,4 +105,14 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 7. 예약 정보 입력 화면 진입 시 로그인 유저의 정보 조회 [GET /api/reservations/info]
+     * @param principal : Spring Security를 통해 인증된 현재 로그인 사용자 정보
+     * @return HTTP 200 (OK) 및 예약자 정보 응답 DTO
+     */
+    @GetMapping("/info")
+    public ResponseEntity<ReservationDto.ReserverResponse> getReserverInfo(Principal principal) {
+        ReservationDto.ReserverResponse response = reservationService.getReserverInfo(principal.getName());
+        return ResponseEntity.ok(response);
+    }
 }

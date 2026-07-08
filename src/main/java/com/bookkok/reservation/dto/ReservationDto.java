@@ -2,6 +2,7 @@ package com.bookkok.reservation.dto;
 
 import com.bookkok.club.entity.Club;
 import com.bookkok.reservation.entity.Reservation;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,18 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ReservationDto {
+
+    //예약자 정보 조회
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReserverResponse {
+        private String reserverName;
+        private String phoneNumber;
+        private Long clubId;
+        private String clubName;
+    }
 
     //예약 생성 요청 DTO
     @Getter
@@ -65,7 +78,7 @@ public class ReservationDto {
         private String reservationCourt;
         private LocalTime reservationTime;
         private int headcount;
-        private LocalDateTime createdDate;
+        private LocalDate createdDate;
 
         public static DetailResponse from(Reservation reservation) {
             return DetailResponse.builder()

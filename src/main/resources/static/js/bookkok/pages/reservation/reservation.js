@@ -11,6 +11,25 @@ async function renderReservationStep1() {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
+
+    //달력 시작일과 종료일 계산
+    const startDate = `${year}-${String(month+1).padStart(2, '0')}-01`;
+    const lastDay = new Date(year, month+1, 0).getDate();
+    const endDate = `${year}-${String(month+1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+    //전역 state에 월별 예약 데이터 초기화
+    if (!window.state) window.state = {};
+    window.state.monthlyReservations = [];
+
+    try {
+        const response = await api(`/api/reservations/calendar?startDate=${startDate}&endDate=${endDate}`);
+        if (response && Array.isArray(response)) {
+            state.monthlyReservations = response;
+        }
+    } catch (error) {
+        console.error("예약 현황을 불러오지 못했습니다.", error);
+    }
+
     setApp(html`
         ${renderSteps(1)}
         <section class="calendar-layout">
@@ -48,47 +67,130 @@ function renderCalendar(year, month) {
     const first = new Date(year, month, 1);
     const last = new Date(year, month + 1, 0);
     const cells = dayNames.map(name => `<div class="day-name">${name}</div>`);
+
     for (let i = 0; i < first.getDay(); i += 1) {
         cells.push('<div class="day-cell muted"></div>');
     }
+
+    //예약 데이터를 날짜 -> 시간 -> 코트 수 형태로 그룹화
+    const dailyStats = {};
+    if (Array.isArray(state.monthlyReservations)) {
+        state.monthlyReservations.forEach(res => {
+            const date = res.reservationDate;
+            const time = String(res.reservationTime || '').substring(0, 5); //"00:00" 형식
+
+            if (!dailyStats[date]) dailyStats[date] = {};
+            if (!dailyStats[date][time]) dailyStats[date][time] = 0;
+            dailyStats[date][time]++;
+        });
+    }
+
     for (let day = 1; day <= last.getDate(); day += 1) {
         const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        cells.push(`<button class="day-cell" type="button" data-date="${date}">${day}<div class="day-meta">0/14</div></button>`);
+
+        //해당 날짜에 마감된 시간대 개수 계산
+        let closedTimeCount = 0;
+        if (dailyStats[date]) {
+            Object.values(dailyStats[date]).forEach(courtCount => {
+                if (courtCount >= 5) closedTimeCount++;
+            });
+        }
+
+        const isAllClosed = closedTimeCount === 14;
+        const btnClass = `day-cell ${isAllClosed ? 'muted' : ''} ${state.selectedDate === date ? 'selected' : ''}`;
+
+        //모든 시간이 마감되었다면 disabled 처리'
+        cells.push(`<button class="${btnClass}" type="button" data-date="${date}" ${isAllClosed ? 'disabled' : ''}>
+                        ${day}
+                        <div class="day-meta">${closedTimeCount}/14</div>
+                    </button>`);
     }
+
     calendar.innerHTML = cells.join('');
+
     calendar.querySelectorAll('[data-date]').forEach(cell => {
         cell.addEventListener('click', () => {
             if (!requireLogin()) return;
             state.selectedDate = cell.dataset.date;
+            state.selectedTime = null;
+            state.selectedCourt = null;
+
             calendar.querySelectorAll('.day-cell').forEach(item => item.classList.remove('selected'));
             cell.classList.add('selected');
+
+            renderReservationChoices();
         });
     });
 }
 
 function renderReservationChoices() {
     const times = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
-    document.getElementById('timeGrid').innerHTML = times.map(time => `<button type="button" data-time="${time}">${time}</button>`).join('');
-    document.getElementById('timeGrid').querySelectorAll('button').forEach(button => {
+    const courts = ['1번 코트', '2번 코트', '3번 코트', '4번 코트', '5번 코트'];
+
+    const timeGridEl = document.getElementById('timeGrid');
+    const courtListEl = document.getElementById('courtList');
+
+    //날짜를 아직 선택하지 않은 경우
+    if (!state.selectedDate) {
+        timeGridEl.innerHTML = '<div style="padding: 1rem; color: #888; grid-column: 1 / -1;">날짜를 먼저 선택해주세요.</div>';
+        courtListEl.innerHTML = '<div style="padding: 1rem; color #888;">날짜와 시간을 먼저 선택해주세요.</div>';
+        return;
+    }
+
+    //2. 날짜를 선택한 경우 -> 시간 목록 띄우기
+    const dateReservations = Array.isArray(state.monthlyReservations)
+            ? state.monthlyReservations.filter(res => res.reservationDate === state.selectedDate)
+            : [];
+
+    timeGridEl.innerHTML = times.map(time => {
+        const bookedCount = dateReservations.filter(res => String(res.reservationTime || '').startsWith(time)).length;
+        const isClosed = bookedCount >= 5;
+        const isSelected = state.selectedTime === time;
+
+        return `<button type="button" data-time="${time}"
+                    class="${isClosed ? 'muted' : ''} ${isSelected ? 'selected' : ''}"
+                    ${isClosed || !state.selectedDate ? 'disabled' : ''}>
+                    ${time}
+                </button>`;
+    }).join('');
+
+    timeGridEl.querySelectorAll('button:not([disabled])').forEach(button => {
         button.addEventListener('click', () => {
             if (!requireLogin()) return;
             state.selectedTime = button.dataset.time;
-            document.querySelectorAll('#timeGrid button').forEach(item => item.classList.remove('selected'));
-            button.classList.add('selected');
-        });
-    });
+            state.selectedCourt = null;
+            renderReservationChoices();
+        })
+    })
 
-    document.getElementById('courtList').innerHTML = [1, 2, 3, 4, 5]
-        .map(num => `<button type="button" data-court="${num}번 코트">${num}번 코트 (예약 가능)</button>`)
-        .join('');
-    document.getElementById('courtList').querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', () => {
-            if (!requireLogin()) return;
-            state.selectedCourt = button.dataset.court;
-            document.querySelectorAll('#courtList button').forEach(item => item.classList.remove('selected'));
-            button.classList.add('selected');
+    //3. 시간 선택
+    if (!state.selectedTime) {
+        courtListEl.innerHTML = '<div style="padding: 1rem; color: #888;">시간을 먼저 선택해 주세요.</div>';
+    } else { //선택된 날짜+시간에 이미 예약된 코트 이름 목록 추출
+        const bookedCourts = dateReservations
+            .filter(res => String(res.reservationTime || '' ).startsWith(state.selectedTime))
+            .map(res => res.reservationCourt);
+
+        courtListEl.innerHTML = courts.map(court => {
+            const isBooked = bookedCourts.includes(court);
+            const isSelected = state.selectedCourt === court;
+            const statusText = isBooked ? '(예약 마감)' : '(예약 가능)';
+
+            return `<button type="button" data-court="${court}"
+                        class="${isBooked ? 'muted' : ''} ${isSelected ? 'selected' : ''}"
+                        ${isBooked ? 'disabled' : ''}>
+                        ${court} ${statusText}
+                    </button>`;
+        }).join('');
+
+        courtListEl.querySelectorAll('button:not([disabled])').forEach(button => {
+            button.addEventListener('click', () => {
+                if (!requireLogin()) return;
+                state.selectedCourt = button.dataset.court;
+                renderReservationChoices();
+            });
         });
-    });
+    }
 }
 
 function goReservationInfo() {
@@ -105,38 +207,82 @@ function goReservationInfo() {
     location.href = '/reservations/info';
 }
 
-function renderReservationStep2() {
+async function renderReservationStep2() {
     if (!requireLogin()) return;
     const draft = JSON.parse(localStorage.getItem('bookkokReservationDraft') || '{}');
-    setApp(html`
+
+    //현재 로그인한 회원의 정보를 가져옴
+    let userInfo = {
+        phoneNumber: '',
+        clubId: '',
+        clubName: ''
+    };
+    try {
+        const response = await api('/api/reservations/info');
+        if (response) {
+            userInfo = response;
+        }
+    } catch (error) {
+        console.error("사용자 정보를 불러오지 못했습니다.");
+    }
+
+    setApp(html `
         ${renderSteps(2)}
         <section class="wide-panel">
             <h1 class="sub-title">예약 정보 입력</h1>
             <div class="notice">선택 정보: ${escapeHtml(draft.reservationDate)} / ${escapeHtml(draft.reservationTime)} / ${escapeHtml(draft.reservationCourt)}</div>
-            <div class="form-row"><label for="reservationClubId">단체 ID</label><input class="field" id="reservationClubId" type="number" placeholder="예약할 단체 ID"></div>
-            <div class="form-row"><label for="headcount">인원</label><input class="field" id="headcount" type="number" value="1"></div>
-            <div class="form-row"><label for="applicantName">신청자명</label><input class="field" id="applicantName" value="${escapeHtml(state.memberId)}"></div>
-            <div class="form-row"><label for="applicantPhone">휴대폰</label><input class="field" id="applicantPhone"></div>
+
+            <div class="form-row">
+                <label for="clubName">단체명</label>
+                <input class="field" id="clubName" type="text" value="${escapeHtml(userInfo.clubName)}" readonly>
+                <input type="hidden" id="clubId" value="${userInfo.clubId}">
+            </div>
+            <div class="form-row">
+                <label for="headcount">인원</label>
+                <input class="field" id="headcount" type="number" placeholder="참여 인원 입력" min="1">
+            </div>
+            <div class="form-row">
+                <label for="leaderName">신청자 아이디</label>
+                <input class="field" id="leaderName" type="text" value="${escapeHtml(userInfo.name) || state.memberId}" readonly>
+            </div>
+            <div class="form-row">
+                <label for="leaderPhone">휴대폰 번호</label>
+                <input class="field" id="leaderPhone" type="text" value="${escapeHtml(userInfo.phoneNumber)}" readonly>
+            </div>
+
             <div class="actions">
                 <button class="secondary" type="button" onclick="location.href='/reservations'">이전</button>
                 <button class="primary" id="reservationSubmit" type="button">예약 확정</button>
             </div>
         </section>
     `);
-    document.getElementById('reservationSubmit').addEventListener('click', createReservation);
+    document.getElementById('reservationSubmit').addEventListener('click', createReservation)
 }
 
 async function createReservation() {
     const draft = JSON.parse(localStorage.getItem('bookkokReservationDraft') || '{}');
+
+    const clubIdVal = document.getElementById('clubId').value;
+    const headcountVal = document.getElementById('headcount').value;
+
+    if (!headcountVal || Number(headcountVal) < 1) {
+        alert('참여 인원을 정확히 입력해주세요.');
+        return;
+    }
+
+    if (!clubIdVal) {
+        alert('예약은 단체장만 가능합니다.');
+    }
+
     try {
         await api('/api/reservations', {
             method: 'POST',
             body: JSON.stringify({
-                clubId: Number(value('reservationClubId')),
+                clubId: Number(value(clubIdVal)),
                 reservationDate: draft.reservationDate,
                 reservationCourt: draft.reservationCourt,
                 reservationTime: draft.reservationTime,
-                headcount: Number(value('headcount'))
+                headcount: Number(headcountVal)
             })
         });
         location.href = '/reservations/done';

@@ -2,6 +2,8 @@ package com.bookkok.reservation.service;
 
 import com.bookkok.club.entity.Club;
 import com.bookkok.club.repository.ClubRepository;
+import com.bookkok.member.entity.Member;
+import com.bookkok.member.repository.MemberRepository;
 import com.bookkok.reservation.dto.ReservationDto;
 import com.bookkok.reservation.entity.Reservation;
 import com.bookkok.reservation.repository.ReservationRepository;
@@ -19,18 +21,30 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ClubRepository clubRepository; //예약 주체인 Club 엔터티도 필요
+    private final MemberRepository memberRepository;
 
     /**
      * 1. 예약 생성
+     * @param memberId : 현재 로그인한 사용자의 ID (Principal에서 전달받음)
      * @param request : 예약 날짜, 시간, 코트, 인원수, 소속 단체 id가 포함된 생성 요청 dto
      * @return : db에 정상 저장된 예약 데이터의 식별값
      * @throws IllegalArgumentException : 1. 요청된 날짜/시간/코트가 이미 예약 마감된 경우
      *                                    2. 전달받은 단체 id가 db에 존재하지 않을 경우
      */
     @Transactional
-    public Long createReservation(ReservationDto.CreateRequest request) {
+    public Long createReservation(String memberId, ReservationDto.CreateRequest request) {
 
-        //날짜 + 시간 + 코트 기반의 중복 예약 존재 여부 확인 (동시성)
+        //1. 로그인한 회원 정보 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 정보를 찾을 수 없습니다."));
+
+        //2. 회원의 소속 단체 확인
+        Club club = member.getClub();
+        if (club == null) {
+            throw new IllegalArgumentException("단체장만 예약을 할 수 있습니다.");
+        }
+
+        //3. 날짜 + 시간 + 코트 기반의 중복 예약 존재 여부 확인 (동시성)
         boolean isOverBooked = reservationRepository.existsByReservationDateAndReservationTimeAndReservationCourt(
                 request.getReservationDate(),
                 request.getReservationTime(),
@@ -39,10 +53,6 @@ public class ReservationService {
         if (isOverBooked) {
             throw new IllegalArgumentException("해당 날짜와 시간의 코트는 이미 예약이 마감되었습니다.");
         }
-
-        //예약하는 단체가 실제로 존재하는지 검증
-        Club club = clubRepository.findById(request.getClubId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 단체입니다."));
 
         Reservation reservation = request.toEntity(club);
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -102,6 +112,26 @@ public class ReservationService {
         //추후 단체장만 예약 삭제 기능 필요시 추가
 
         reservationRepository.delete(reservation);
+    }
+
+    /**
+     * 7. 예약 정보 입력 화면 전용 (로그인한 예약자의 단체 및 전화번호 정보 조회)
+     * @param memberId: 현재 로그인한 회원의 아이디
+     * @return 정보 입력 화면에 필요한 단체명, 단체 아이디, 전화번호 dto
+     */
+    public ReservationDto.ReserverResponse getReserverInfo(String memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        Club club = member.getClub();
+        String reserverPhone = member.getPhoneNumber();
+
+        return ReservationDto.ReserverResponse.builder()
+                .clubId(club.getClubId())
+                .clubName(club.getClubName())
+                .phoneNumber(reserverPhone != null ? reserverPhone : "")
+                .build();
     }
 
 }

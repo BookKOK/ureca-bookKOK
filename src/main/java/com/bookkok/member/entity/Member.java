@@ -34,6 +34,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 @Builder
 public class Member implements Persistable<String> {
 
@@ -86,6 +87,10 @@ public class Member implements Persistable<String> {
 	@Override
 	public boolean isNew() {
 		return regDate == null;
+	}
+	
+	public void changeName(String name) {
+	    this.name = name;
 	}
 	
 	public void changePassword(String password) {

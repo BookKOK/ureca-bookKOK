@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class MemberDto {
 
@@ -22,6 +23,7 @@ public class MemberDto {
 
 	    private String memberId;
 	    private String password;
+	    private String passwordCheck;
 	    private String name;
 	    private String email;
 	    private String phoneNumber;
@@ -79,21 +81,29 @@ public class MemberDto {
 		private String memberId;
 	    private String currentPassword;
 	    private String newPassword;
+	    private String newPasswordCheck;
 	}
 	
-//	@Getter
-//	@NoArgsConstructor
-//	public static class UpdateProfileRequest {			// 이름 변경
-//
-//	    private String name;
-//	}
+	@Getter
+	@Setter
+	public static class UpdateProfileRequest {
+
+	    private String name;
+	    private String email;
+	    private String phoneNumber;
+	}
+	
+	@Getter
+	@Builder
+	public static class UpdateProfileResponse {
+
+	    private String memberId;
+	    private String name;
+	    private String email;
+	    private String phoneNumber;
+	}
+	
 //	
-//	@Getter
-//	@NoArgsConstructor
-//	public class UpdateRoleRequest {					// 역할 변경
-//
-//	    private RoleType roleName;
-//	}
 //	
 //	@Getter
 //	@NoArgsConstructor
@@ -101,14 +111,7 @@ public class MemberDto {
 //
 //	    private String password;
 //	}
-	
-	@Getter
-	@NoArgsConstructor
-	public static class SocialLoginRequest {			// 소셜 로그인 구현
 
-	    private String accessToken;
-	}
-	
 	
 	
 }

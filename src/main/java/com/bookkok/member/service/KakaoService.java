@@ -115,7 +115,7 @@ public class KakaoService {
                     .name(userInfo.getKakaoAccount().getName())
                     .roleName(RoleType.USER)
                     .password(passwordEncoder.encode(randomPassword))
-                    .phoneNumber(PhoneNumberUtil.normalize(userInfo.getKakaoAccount().getPhoneNumber()))
+                    .phoneNumber(PhoneNumberUtil.normalizePhone(userInfo.getKakaoAccount().getPhoneNumber()))
                     .build();
 
             memberRepository.save(member);
@@ -129,5 +129,6 @@ public class KakaoService {
         return tokenService.createToken(member);
     }
     
+
     
 }

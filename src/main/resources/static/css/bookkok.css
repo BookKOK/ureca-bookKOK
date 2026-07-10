@@ -537,3 +537,20 @@ select {
     display: inline-block;
     min-width: 20px;
 }
+
+/* 행사 등록 팝업 전용 폼 스타일 */
+.modal .form-row {
+    display: grid;
+    grid-template-columns: 80px 1fr; /* 라벨 너비 조절 */
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.modal h3 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    color: #049b7d;
+    border-bottom: 2px solid #049b7d;
+    padding-bottom: 10px;
+}

@@ -57,6 +57,24 @@ public class PostService {
         return PostDto.DetailResponse.from(post);
     }
 
+    // 게시글 조건 검색
+    @Transactional
+    public List<PostDto.ListResponse> searchPosts(String type, String keyword){
+        List<Post> posts;
+
+        if("title".equals(type)){
+            posts = postRepository.findByTitleContaining(keyword);
+        }else if("content".equals(type)){
+            posts = postRepository.findByContentContaining(keyword);
+        }else{
+            posts = postRepository.searchByTitleOrContent(keyword);
+        }
+
+        return posts.stream()
+                .map(PostDto.ListResponse::from)
+                .collect(Collectors.toList());
+    }
+
     // 게시글 수정
     @Transactional
     public PostDto.DetailResponse updatePost(Long postId, PostDto.UpdateRequest request, Member loginMember){
@@ -117,5 +135,12 @@ public class PostService {
         return postRepository.searchByTitleOrContent(keyword).stream()
                 .map(PostDto.ListResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isLiked(Long postId, Member loginMember) {
+        if(loginMember == null){
+            return false;
+        }
+        return postLikeRepository.existsByPostPostIdAndMemberMemberId(postId, loginMember.getId());
     }
 }

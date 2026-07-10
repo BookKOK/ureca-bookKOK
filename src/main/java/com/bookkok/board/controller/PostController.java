@@ -75,9 +75,23 @@ public class PostController {
         boolean isLiked = postService.toggleLike(postId, loginMember);
         return ResponseEntity.ok(isLiked);
     }
+    @GetMapping("/{postId}/like-status")
+    public ResponseEntity<Boolean> getLikeStatus(
+            @PathVariable("postId") Long postId,
+            @AuthenticationPrincipal User loginUser){
+
+        Member loginMember = memberRepository.findById(loginUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("회원찾을수없음"));
+        boolean isLiked = postService.isLiked(postId, loginMember);
+        return ResponseEntity.ok(isLiked);
+    }
 
     @GetMapping("/search")
-    public ResponseEntity<List<PostDto.ListResponse>> searchPosts(@RequestParam String keyword) {
-        return ResponseEntity.ok(postService.searchPosts(keyword));
+    public ResponseEntity<List<PostDto.ListResponse>> searchPosts(
+            @RequestParam(value = "type", required = false, defaultValue = "title content") String type,
+            @RequestParam("keyword") String keyword){
+        List<PostDto.ListResponse> responses = postService.searchPosts(type, keyword);
+        return ResponseEntity.ok(responses);
+
     }
 }

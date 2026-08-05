@@ -2,6 +2,9 @@ package com.bookkok.reservation.repository;
 
 import com.bookkok.reservation.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,6 +22,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     //우리 단체(나)의 예약 현황을 목록으로 조회
     List<Reservation> findByClub_ClubId(Long clubId);
+
+    //단체Id, 날짜, 코트 기반 삭제
+    @Modifying
+    @Query("delete from Reservation r where r.club.clubId = :clubId and r.reservationDate = :date and r.reservationCourt = :court")
+    void deleteByClubIdDateCourt(@Param("clubId") Long clubId,
+                                 @Param("date") LocalDate reservationDate,
+                                 @Param("court") String reservationCourt);
 
     //특정 날짜/시간/코트에 이미 예약이 있는지 중복 체크 (동시성 방지)
     boolean existsByReservationDateAndReservationTimeAndReservationCourt(
